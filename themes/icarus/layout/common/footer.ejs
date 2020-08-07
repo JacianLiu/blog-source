@@ -13,7 +13,6 @@
             </div>
             <div class="container" style="text-align:center">
                     &copy; <%= date(new Date(), 'YYYY') %> <a href="<%- url_for('/')  %>"><%= get_config('author') || get_config('title') %></a>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <a class="has-text-black" href="http://www.beian.miit.gov.cn/" target="_blank">京ICP备19039488号</a>
                     <!-- Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                             href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a> -->
                     <% if (has_config('plugins.busuanzi') ? get_config('plugins.busuanzi') : false) { %>
