@@ -1,0 +1,129 @@
+// 修改按键（button）样式
+.btn {
+    color: #49b1f5;
+    background: #fff;
+    border: 2px solid #49b1f5;
+}
+
+
+// 按键（button）点击时样式
+.btn:hover {
+  border-color: #49b1f5;
+  color: #fff;
+  background: #49b1f5;
+}
+// 鼠标移动至文章标题时的效果
+.posts-expand .post-title-link::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #49b1f5;
+    visibility: hidden;
+    -webkit-transform: scaleX(0);
+    -moz-transform: scaleX(0);
+    -ms-transform: scaleX(0);
+    -o-transform: scaleX(0);
+    transform: scaleX(0);
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    transition-delay: 0s;
+}
+
+// 修改网站头部颜色
+.headband {
+    height: 3px;
+    background: #49b1f5;
+}
+
+.site-meta {
+    padding: 20px 0;
+    color: #fff;
+    background: #49b1f5;
+    position: relative;
+}
+.site-subtitle {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #ffffff;
+}
+
+// 修改选中字符的颜色
+/* webkit, opera, IE9 */
+::selection {
+    background: #00c4b6;
+    color: #f7f7f7;
+}
+/* firefox */
+::-moz-selection {
+    background: #00c4b6;
+    color: #f7f7f7;
+}
+
+// 文章内链接文本样式
+.post-body p a{
+    color: #0593d3;
+    border-bottom: none;
+    border-bottom: 1px solid #0593d3;
+    &:hover {
+        color: #fc6423;
+        border-bottom: none;
+        border-bottom: 1px solid #fc6423;
+    }
+}
+
+body {
+  background: url(http://47.94.94.154/background.jpg);
+  background-repeat: no-repeat;
+  background-attachment:fixed;
+  background-size:100% 100%;
+}
+.post-block {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+//底部博客信息颜色
+.footer {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.footer a{
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    background-color: transparent;
+    border-bottom: 1px solid #999;
+    color: #ccc;
+    outline: 0;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pagination{
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: initial;
+    border-top: initial;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.12),0 3px 1px -2px rgba(0,0,0,.06),0 1px 5px 0 rgba(0,0,0,.12),0 -1px .5px 0 rgba(0,0,0,.09);
+    margin: 12px 0 0;
+    padding: 10px 0 10px;
+}
+
+.sidebar-inner {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: initial;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.12), 0 3px 1px -2px rgba(0,0,0,.06), 0 1px 5px 0 rgba(0,0,0,.12), 0 -1px 0.5px 0 rgba(0,0,0,.09);
+    box-sizing: border-box;
+    color: #555;
+    width: 240px;
+    opacity: 0;
+}
+
+.back-to-top.back-to-top-on {
+    background: #ccc;
+    visibility: visible;
+    transition-delay: 0s;
+    transition-duration: .2s;
+    transition-timing-function: ease-in-out;
+}

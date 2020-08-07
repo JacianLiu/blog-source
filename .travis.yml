@@ -1,0 +1,35 @@
+# 指定语言为node_js，nodejs版本stable
+language: node_js
+node_js: stable
+
+# 指定构建的分支
+branches:
+  only:
+    - master
+
+# 指定node_modules缓存
+cache:
+  directories:
+    - node_modules
+
+# 构建之前安装hexo-cli，因为接下来会用到
+before_install:
+  - npm install -g hexo-cli
+
+# 安装依赖
+install:
+  - npm install
+
+# 执行脚本，先hexo clean 再 hexo generate，会使用hexo的同学应该不陌生。
+script:
+  - hexo clean
+  - hexo generate
+
+# 上面的脚本执行成功之后执行以下脚本进行deploy
+after_success:
+  - git init
+  - git config --global user.name "JacianLiu"
+  - git config --global user.email "JacianLiu@163.com"
+  # 替换同目录下的_config.yml文件中GH_TOKEN字符串为travis后台配置的变量
+  - sed -i "s/GH_TOKEN/${GH_TOKEN}/g" ./_config.yml
+  - hexo deploy

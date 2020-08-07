@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+
+<meta name="generator" content="Hexo 3.8.0" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<title>【MySQL实战45讲】索引部分整理 - Jacian&#39;s Blog</title>
+
+
+    <meta name="description" content="为什么要有索引？索引的作用是什么？ 索引的出现其实就是为了提高数据查询的效率，就像书的目录一样。一本书我们可以通过目录中快速的定位其中的某一个知识点；对于数据库而言索引其实就是它的目录，可以通过索引快速的定位都某一条或多条记录。">
+<meta name="keywords" content="MySQL,索引">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MySQL实战45讲】索引部分整理">
+<meta property="og:url" content="https://blog.jacian.com/2019/12/1576161512799/index.html">
+<meta property="og:site_name" content="Jacian&#39;s Blog">
+<meta property="og:description" content="为什么要有索引？索引的作用是什么？ 索引的出现其实就是为了提高数据查询的效率，就像书的目录一样。一本书我们可以通过目录中快速的定位其中的某一个知识点；对于数据库而言索引其实就是它的目录，可以通过索引快速的定位都某一条或多条记录。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://img.jacian.com/FnUD1D1JYd4duuXktGBrOhkeLbMW">
+<meta property="og:updated_time" content="2019-12-31T02:21:23.992Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【MySQL实战45讲】索引部分整理">
+<meta name="twitter:description" content="为什么要有索引？索引的作用是什么？ 索引的出现其实就是为了提高数据查询的效率，就像书的目录一样。一本书我们可以通过目录中快速的定位其中的某一个知识点；对于数据库而言索引其实就是它的目录，可以通过索引快速的定位都某一条或多条记录。">
+<meta name="twitter:image" content="https://img.jacian.com/FnUD1D1JYd4duuXktGBrOhkeLbMW">
+
+
+
+
+
+
+
+<link rel="icon" href="https://img.jacian.com/boyfavicon.ico">
+
+
+<link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/bulma/0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.4.1/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdnjs.loli.net/ajax/libs/pace/1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145676372-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-145676372-1');
+    </script>
+
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="https://img.jacian.com/jfavicon.png" alt="【MySQL实战45讲】索引部分整理" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">主页</a>
+                
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                
+                <a class="navbar-item"
+                href="/categories">分类</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/about">关于</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="https://github.com/JacianLiu">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section" style="background: url('https://img.jacian.com/background1.jpg');background-repeat: no-repeat;
+    background-attachment:fixed;
+    background-size:100% 100%;">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <i class="fas fa-angle-double-right"></i>【MySQL实战45讲】索引部分整理
+            
+        </h1>
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <!-- <time class="level-item has-text-grey" datetime="2019-12-26T14:38:32.000Z"><i class="far fa-calendar-alt">&nbsp;</i>2019-12-26</time> -->
+                <time class="level-item has-text-grey" datetime="2019-12-26T14:38:32.000Z"><i class="far fa-calendar-alt">&nbsp;</i>2019-12-26</time>
+                
+                    <time class="level-item has-text-grey is-hidden-mobile" datetime="2019-12-31T02:21:23.992Z"><i class="far fa-calendar-check">&nbsp;</i>2019-12-31</time>
+                
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/MySQL/">MySQL</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    10 分钟 读完 (大约 1572 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <!-- 【MySQL实战45讲】索引部分整理 -->
+            
+        </h1>
+        <div class="content">
+            <p>为什么要有索引？索引的作用是什么？</p>
+<p>索引的出现其实就是为了提高数据查询的效率，就像书的目录一样。一本书我们可以通过目录中快速的定位其中的某一个知识点；对于数据库而言索引其实就是它的目录，可以通过索引快速的定位都某一条或多条记录。</p>
+<a id="more"></a>
+<h1 id="常见索引模型"><a href="#常见索引模型" class="headerlink" title="常见索引模型"></a>常见索引模型</h1><h2 id="Hash表"><a href="#Hash表" class="headerlink" title="Hash表"></a>Hash表</h2><p>哈希表是一个以 键-值（key-value） 存储数据的结构，我们只要输入待查找的值即 key，就可以找到对应的值即 value。</p>
+<h3 id="结构特点"><a href="#结构特点" class="headerlink" title="结构特点"></a>结构特点</h3><p>把值放在数组里，用一个哈希函数把 key 转换成一个确定的位置，然后把 value 放在数组的这个位置。当多个 key 值经过哈希函数的换算会出现同一个值的情况。这时候会拉出一个链表进行存储。</p>
+<h3 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h3><p>假设现在维护一个身份证信息和姓名的表，表示根据身份证查找对应的名字，这时对应的哈希索引示意图如下</p>
+<p><img src="https://img.jacian.com/Fs45OvBvj3OkhnpTr4NQ5hdbUFsK" alt="image.png"></p>
+<p>图 1 哈希表示意图</p>
+<p>图中，User2 和 User4 根据身份证号算出来的值都是 N，所以后边跟了一个链表存储。如果要找到 User2 对应的名字是什么，首先通过哈希函数计算出 ID_card_n2 的值为 N，然后按顺序遍历找到 User2。</p>
+<p>在这里四个 ID_card_n 的值并不是递增的，这样做的好处就是增加的时候会很快，直接往后边追加；缺点是数据的存储并不是有序的，所以在做区间查询时会进行全表扫描，速度会非常慢。</p>
+<blockquote>
+<p>哈希表这个结构只适用于等值查询。</p>
+</blockquote>
+<h2 id="有序数组"><a href="#有序数组" class="headerlink" title="有序数组"></a>有序数组</h2><h3 id="结构特点-1"><a href="#结构特点-1" class="headerlink" title="结构特点"></a>结构特点</h3><p>将数据存放到数组中，数据在数组中是按顺序存储的，从左到右依次从大到小或从小到大。</p>
+<h3 id="案例-1"><a href="#案例-1" class="headerlink" title="案例"></a>案例</h3><p>以哈希表中的例子，使用有序数组实现的结果如下</p>
+<p><img src="https://img.jacian.com/FuDiF6lu6BeOs0lVz9xM4caslpTl" alt="image.png"></p>
+<p>图 2 有序数组示意图</p>
+<p>这里假设身份证是没有重复的，这个数组是按照身份证的递增顺序保存的。这时候如果刷要查询 ID_card_n2 对应的姓名，用二分查找法可以快速定位到这条记录，同时如果要进行范围查询也是很快的，比如要查找身份证号在 [ID_card_X, ID_card_N] 区间的 User，可以先用二分查找法找到 ID_card_X 的值，如果没有则找到大于 ID_card_X 的第一个值，然后向右遍历，知道找到第一个大于 ID_card_N 的值退出循环。</p>
+<p>但是往数组中插入一条记录的时候需要挪动后边所有的元素，这样的成本太高，同样的删除一条记录也会导致后边所有的元素往前挪动。</p>
+<blockquote>
+<p>有序数组结构适用于等值和范围查询，但是插入和删除的效率太慢。</p>
+</blockquote>
+<h2 id="二叉搜索树"><a href="#二叉搜索树" class="headerlink" title="二叉搜索树"></a>二叉搜索树</h2><h3 id="结构特点-2"><a href="#结构特点-2" class="headerlink" title="结构特点"></a>结构特点</h3><p>二叉搜索树每个节点大于左儿子小于右儿子。</p>
+<h3 id="案例-2"><a href="#案例-2" class="headerlink" title="案例"></a>案例</h3><p>上文例子，二叉搜索树实现如下</p>
+<p><img src="https://img.jacian.com/FoNQjE5a851T4lW2_JdQeed0byQh" alt="image.png"><br>图 3 二叉搜索树示意图</p>
+<p>如果我们要找到 ID_card_n2 的话，根据二叉搜索树的特点，按照图中的搜索顺序依次是：UserA→UserC→UserF→User2。</p>
+<h1 id="InnoDB索引模型"><a href="#InnoDB索引模型" class="headerlink" title="InnoDB索引模型"></a>InnoDB索引模型</h1><p>InnoDB 使用了 B+ 树索引模型，数据都是存储在 B+ 树中的，每一个索引都对应一棵 B+ 树。</p>
+<h3 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h3><p><img src="https://img.jacian.com/FlnOOEhg1UHdu_jYR5WBKS-zhqoq" alt="image.png"></p>
+<p>B树 是一棵多路平衡树且有以下特点：</p>
+<ol>
+<li>m阶B树 表示该树每个节点最多有 m 个孩子；</li>
+<li>除根节点和叶子节点外，其它每个节点至少有 <code>ceil(m / 2)</code> 个孩子；</li>
+<li>若根节点不是叶子节点，则至少有两个孩子；</li>
+<li>所有叶子节点都在同一层，叶子节点不包含任何关键字；</li>
+<li>每个叶子节点包含 n 个关键字信息；<ul>
+<li>Ki（i = 1…n） 为关键字，且关键字按顺序升序排序 k(i-1)&lt;Ki；</li>
+<li>Pi 为指向子树根的节点，且指针 P(i-1) 指向子树中所有节点的关键字均小于 Ki，但都大于 K(i-1)；</li>
+<li>关键字个数 n 必须满足： <code>ceil(m / 2) - 1 &lt;= n &lt;= m-1</code> ；</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://img.jacian.com/FlqZMRQ90pM0q_ivu1IwrHVjYd2U" alt="image.png"></p>
+<h2 id="B-树作为数据库索引的优势"><a href="#B-树作为数据库索引的优势" class="headerlink" title="B+树作为数据库索引的优势"></a><strong>B+树作为数据库索引的优势</strong></h2><p><img src="https://img.jacian.com/FreztqGfNFA9cfj-7jfUvCIiuHz0" alt="image.png"></p>
+<p>B+ Tree 是在 B-Tree 基础上的优化，使其更适合实现外存储索引结构，InnoDB引擎就是基于它实现索引结构，B+Tree 相对于 B-Tree 的优势：</p>
+<ol>
+<li>B+树的磁盘读取代价低：B+树 所有的内部节点没有关键字的具体信息（只存储了key的信息），这样可以使内部节点相对更小。一个硬盘块中包含的节点信息越多，一次性读取内存中的关键字也就越多，相对来说就是 IO 读写次数的降低，也可以说是每次 IO 操作的可观看数据也就越多；</li>
+<li>B+树便于执行扫库操作：B树在分支节点上都保存着数据，要找到具体的顺序数据，必须用中序遍历的方式按序扫库；由于B+树的数据都存储在叶子节点上，所有节点均为索引，所以 B+树 直接从叶子节点挨个扫一遍就完了；B+树 支持范围查询（rang-query）非常方便，而B树不支持；</li>
+<li>B+ 树查询效率更加稳定：由于 B+树 的数据都存储在叶子节点上，分支节点均为索引，所以对于任意关键字的查找都必须从根节点走到分支节点，所有关键字查询路径长度相同，每个数据的查询效率差不多。对于 B树 而言，分支节点也保存有数据，对于每一个数据的查询所走的路径长度也是不一样的，效率也就不一样；</li>
+</ol>
+<h2 id="B-Tree-与-B-Tree-的不同"><a href="#B-Tree-与-B-Tree-的不同" class="headerlink" title="B+Tree 与 B-Tree 的不同"></a>B+Tree 与 B-Tree 的不同</h2><ul>
+<li>非叶子节点只存储键值信息</li>
+<li>所有叶子节点之间都有一个链指针</li>
+<li>数据记录都存放在叶子节点中</li>
+</ul>
+<h2 id="索引维护"><a href="#索引维护" class="headerlink" title="索引维护"></a>索引维护</h2><p><img src="https://img.jacian.com/FjCERb_F5KxnojFndgdaNiecsvpl" alt="image.png"></p>
+<p>B+树 为了维护索引的有序性，在插入新值的时候需要做必要的维护，如果插入新的行 ID 值为 700，则只需要在 R5 的记录后插入一个新的将是。如果插入值的 ID 为400，需要逻辑上挪动后面的数据，空出位置。</p>
+<p>如果 R5 所在的数据页已经满了，根据 B+树 的算法，这时候需要申请一个新的数据页，然后挪动部分数据过去，这个过程称为<strong>页分裂</strong>。页分裂还会影响数据页的利用率，原本在一个页的数据，现在分到两个页中，整体的空间利用率降低大约 50%。</p>
+<p>当相邻的两个页由于删除了数据，利用率很低之后，会将数据页做合并，合并的过程可以认为是分裂过程的逆过程。</p>
+<h3 id="关于索引重建"><a href="#关于索引重建" class="headerlink" title="关于索引重建"></a>关于索引重建</h3><p>对于以下这两个重建索引的作法，说出你的理解。如果有不合适的，为什么，更好的方法是什么？</p>
+<pre><code>// 方案1
+alter table T drop index k;
+alter table T add index(k);
+// 方案2
+alter table T drop primary key;
+alter table T add primary key(id);
+</code></pre><p><strong>为什么重建索引？</strong></p>
+<p>索引可能因为删除，或者页分裂等原因，导致数据页有空洞，重建索引的过程会创建一个新的索引，把数据按顺序插入，这样页面的利用率最高，也就是索引更紧凑、更省空间。</p>
+<p><strong>解答</strong></p>
+<p>重建主键的过程不合理：</p>
+<ol>
+<li>不论是删除还是创建主键都会整个表重建</li>
+<li>连续执行两个语句，相当于第一个语句白做</li>
+<li>两个语句可以使用 <code>alter table T engine=InnoDB</code> 代替</li>
+</ol>
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><h3 id="主键索引"><a href="#主键索引" class="headerlink" title="主键索引"></a>主键索引</h3><p>主键索引叶子节点中存储的是整行数据，从物理结构的角度也叫 <strong>聚簇索引</strong>。</p>
+<h3 id="非主键索引"><a href="#非主键索引" class="headerlink" title="非主键索引"></a>非主键索引</h3><ul>
+<li>非主键索引的叶子节点存储的是主键的值，从物理存储的角度也叫 <strong>二级索引</strong>。</li>
+<li>二级索引存储主键，是为了减少出现行移动或数据页分裂时二级索引的维护工作，但会让二级索引占用更多的空间。</li>
+</ul>
+<h3 id="基于主键索引和普通查询的查询的区别"><a href="#基于主键索引和普通查询的查询的区别" class="headerlink" title="基于主键索引和普通查询的查询的区别"></a>基于主键索引和普通查询的查询的区别</h3><ul>
+<li>主键索引：只需要搜索主键这棵树。</li>
+<li>普通索引：先搜索普通索引对应的树得到ID，在根据ID在主键索引的树上找到对应的数据，这个过程称为回表。</li>
+</ul>
+<h3 id="聚簇索引的注意点有哪些？"><a href="#聚簇索引的注意点有哪些？" class="headerlink" title="聚簇索引的注意点有哪些？"></a>聚簇索引的注意点有哪些？</h3><p>聚簇索引最大限度的提高了 IO 密集型应用的性能，但它也有限制：</p>
+<ol>
+<li><p>插入速度严重依赖于插入顺序，按照主键的顺序插入是最快的，否则会出现页分裂，严重影响性能。所以一般 InnoDB 表，都会定义一个自增的id作为主键。</p>
+<p> 面试问题：为什么主键需要自增ID，或者为什么主键需要带有时间行关联。</p>
+</li>
+<li><p>更新主键的代价很高，因为将会导致被更新的行移动。因此，InnoDB表一般主键不可更新。</p>
+<p> MySQL默认情况下，主键是允许更新的。MongoDB主键是不允许更新的。</p>
+</li>
+<li><p>二级索引访问需要回表。</p>
+<p> 有种情况无需二次查找，就是索引覆盖。</p>
+</li>
+<li><p>主键ID建议使用整型。因为，每个主键索引的 B+Tree 节点的键值可以存储更多主键ID，每个非主键索引的 B+Tree 节点的数据可以存储更多的主键ID。</p>
+</li>
+</ol>
+<h3 id="什么场景适合使用业务字段直接做主键？"><a href="#什么场景适合使用业务字段直接做主键？" class="headerlink" title="什么场景适合使用业务字段直接做主键？"></a>什么场景适合使用业务字段直接做主键？</h3><ul>
+<li>只有一个索引</li>
+<li>该索引必须有唯一索引</li>
+<li>KV场景，由于没有其他索引，所以不用考虑其他索引的叶子节点大小的问题</li>
+<li>此时直接将这个索引设置为主键，可以避免回表</li>
+</ul>
+<h2 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h2><p>如果执行的语句是 <code>select ID from T where k between 3 and 5;</code> ，这时只需要查 ID 的值，而ID的值已经在 k 索引树上了，因此可以直接拿到查询结果，不需要回表。也就是说索引 k 已经覆盖了我们的查询需求，我们称为<strong>覆盖索引</strong>。</p>
+<h3 id="覆盖索引的优势"><a href="#覆盖索引的优势" class="headerlink" title="覆盖索引的优势"></a>覆盖索引的优势</h3><p>覆盖索引可以减少树的搜索次数，显著提升查询性能，所以使用覆盖索引是一个常用的性能优化手段。</p>
+<h2 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h2><h3 id="业务例子"><a href="#业务例子" class="headerlink" title="业务例子"></a>业务例子</h3><p>一个市民信息表上，是否有必要将身份证号 和 名字 建立联合索引？</p>
+<p>如果有一个高配请求，要根据市民的身份照查询他的姓名，这个联合索引就很有意义了。它可以在这个高配请求上用到覆盖索引，不需要回表。</p>
+<h2 id="最左前缀原则"><a href="#最左前缀原则" class="headerlink" title="最左前缀原则"></a>最左前缀原则</h2><p><img src="https://img.jacian.com/FoSckKi74AVtLUMiLFMmdj3sVEIf" alt="image.png"></p>
+<h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><p>现在有这么一个联合索引，（name,age）。</p>
+<p>索引项是按照索引定义里面出现的字段顺序排序的，不只是索引的全部定义，只要满足最左前缀，就可以利用索引来加速检索。</p>
+<ul>
+<li>这个最左前缀可以是联合索引的最左N个字段</li>
+<li>也可以是字符串索引的最左M个字符</li>
+</ul>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><ul>
+<li>查询条件 <code>name=&#39;张三&#39;</code>，可以快速定位到 ID4，然后向后遍历得到所有的结果集</li>
+<li>查询条件 <code>name like &#39;张%&#39;</code> 时，此时也可以用上索引，查找到 ID3，然后向后遍历得到所有结果集</li>
+</ul>
+<h3 id="建立索引时，如何安排索引内的字段排序？"><a href="#建立索引时，如何安排索引内的字段排序？" class="headerlink" title="建立索引时，如何安排索引内的字段排序？"></a>建立索引时，如何安排索引内的字段排序？</h3><ul>
+<li>原则是，如果通过调整顺序，可以少维护一个索引，name这个顺序往往就是需要优先考虑采用的。</li>
+<li>如果既有联合索引，又有基于 a、b 各自的查询。查询条件里只有 b 的查询，是无法使用 (a, b) 这个联合索引的，此时就要同时维护 (a, b) ，(b) 这两个索引。</li>
+<li>考虑空间问题，比如市民表，name 字段比 age 字段大，建议创建一个 (name, age) 和一个 (age)</li>
+</ul>
+<h3 id="索引创建合理性例子"><a href="#索引创建合理性例子" class="headerlink" title="索引创建合理性例子"></a>索引创建合理性例子</h3><pre><code>create table `geek` (
+    `a` int(11) not null,
+    `b` int(11) not null,
+    `c` int(11) not null,
+    `d` int(11) not null,
+    primary key (`a`, `b`),
+    key `c` (`c`),
+    key `ca` (`c`, `a`),
+    key `cb` (`c`, `b`),
+) engine=InnoDB;
+</code></pre><p>既然主键包含了a、b这两个字段，那意味着单独在字段c上创建一个索引，就已经包含三个字段了，为什么要创建“ca”、“cb”这两个索引？</p>
+<p>同事告诉他，是因为他们的业务里面有这样的两种语句：</p>
+<pre><code>select * from geek where c=N order by a limit 1;select * from geek where c=N order by b limit 1;
+</code></pre><p>问题，这位同事解释的对吗，为了这两个查询模式，这两个索引是否都是必须的？为什么？</p>
+<ul>
+<li>索引ca 的组织是先按c 排序，再按a 排序，同时记录主键，主键部分只有b，这个跟索引c的排序结果是一样的</li>
+<li>索引cb 的组织是先按c 排序，再按b 排序，同时记录主键，主键部分只有a</li>
+<li>所以，ca 可以去掉，cb 需要保留</li>
+</ul>
+<h2 id="索引下推"><a href="#索引下推" class="headerlink" title="索引下推"></a>索引下推</h2><p>此处还是以市民表的联合索引 (name, age) 为例，需求为 检索出表中 名字第一个字是张，而且年龄是 10岁的所有男孩。</p>
+<pre><code>select * from tuser where name like &apos;张%&apos; and age=10 and ismale=1;
+</code></pre><p>根据最左前缀原则，这个语句在搜索索引树的时候，只能用 “张”，找到一个满足条件的记录 ID3。然后判断其他条件是否满足条件。</p>
+<p>在 MySQL5.6 之前，只能从 ID3 开始一个个的回表，到主键索引上找出数据行，在对比字段。</p>
+<p><img src="https://img.jacian.com/FpXfQYGhiqCzN2c03ZlIIIM3DLt0" alt="image.png"></p>
+<p>在 MyQL5.6 之后引入了索引下推优化（index condition pushdown），可以在索引遍历的过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，从而减少了回表的次数。</p>
+<p><img src="https://img.jacian.com/FpirhAybvJsrs8_k-_2cryYqE7dW" alt="image.png"></p>
+<h1 id="MyISAM索引实现"><a href="#MyISAM索引实现" class="headerlink" title="MyISAM索引实现"></a>MyISAM索引实现</h1><h2 id="索引实现原理"><a href="#索引实现原理" class="headerlink" title="索引实现原理"></a>索引实现原理</h2><p>MyISAM 引擎同 InnoDB 一样，都是使用 B+Tree 作为索引结构。差别在于：</p>
+<ul>
+<li>InnoDB 的数据文件本身就是索引文件。<strong>MyISAM 索引文件和数据文件是分离开的，索引文件仅保存数据记录的地址。</strong></li>
+</ul>
+<h2 id="主键索引和辅助索引"><a href="#主键索引和辅助索引" class="headerlink" title="主键索引和辅助索引"></a>主键索引和辅助索引</h2><p><img src="https://img.jacian.com/FkVhtilK8kkU3Bo_H6XjIeJGm54-" alt="image.png"></p>
+<p><img src="https://img.jacian.com/FgjYQIikMo0Fa-0wv8iCYEGXWb1C" alt="image.png"></p>
+<p>上图分别为主索引和辅助索引，由于 MyISAM 的索引文件中仅保存了数据的地址，所以在 MyISAM 中主索引和辅助索引在结构上没有本质的区别，只是主索引要求 key 的唯一性，而辅助索引的 key 是可以重复的。</p>
+<p>由于 MyISAM 的 data 域中保存的是数据记录的地址，所以 MyISAM 索引检索的算法为首先按照 B+Tree 搜索算法搜索索引，如果指定的 key 存在，则取出 data 域的值，然后以 data 域的值为地址，读取相应的数据记录。</p>
+<blockquote>
+<p>MyISAM的索引方式也叫做“非聚集”的，之所以这么称呼是为了与InnoDB的聚集索引区分。</p>
+</blockquote>
+<h2 id="MyISAM-与-InnoDB-的区别"><a href="#MyISAM-与-InnoDB-的区别" class="headerlink" title="MyISAM 与 InnoDB 的区别"></a>MyISAM 与 InnoDB 的区别</h2><ol>
+<li><p>事务处理上</p>
+<p> MyISAM：强调的是性能，查询的速度比 InnoDB 类型更快，但是不提供事务支持。</p>
+<p> InnoDB：提供事务支持。</p>
+</li>
+<li><p>外键</p>
+<p> MyISAM：不支持外键。</p>
+<p> InnoDB：支持外键。</p>
+</li>
+<li><p>锁</p>
+<p> MyISAM：只支持表级锁。</p>
+<p> InnoDB：支持行级锁和表级锁，默认是行级锁，行锁大幅度提高了多用户并发操作的性能。InnoDB 比较适合于插入和更新操作比较多的情况，而 MyISAM 则适用于频繁的查询的情况。另外， InnoDB 表的行锁也不是绝对的，如果在执行一个 SQL 语句时， MySQL 不能确定要扫描的范围，InnoDB 表同样会锁全表，例如： <code>update table set num=1 where name like &#39;%aaa%&#39;;</code> 。</p>
+</li>
+<li><p>全文检索</p>
+<p> MyISAM：支持全文检索。</p>
+<p> InnoDB：不支持全文检索。</p>
+</li>
+<li><p>表主键</p>
+<p> MyISAM：允许没有主键的表存在。</p>
+<p> InnoDB：如果没有主键，则会自动生成一个 6 字节的主键（用户不可见）。</p>
+</li>
+<li><p>表的具体行数</p>
+<p> MyISAM： <code>select count(*) from table</code> ，MyISAM 只要简单的读出保存好的行数。因为 MyISAM 内置了一个计数器， count(*) 时它直接从计数器中读。</p>
+<p> InnoDB：不保存表的具体行数，也就是说，执行 <code>select count(*) from table</code> 的时候，InnoDB 要扫描一遍整表来计算有多少行。</p>
+</li>
+</ol>
+
+        </div>
+        
+            <ul class="post-copyright">
+                <li><strong>本文标题：</strong><a href="https://blog.jacian.com/2019/12/1576161512799/">【MySQL实战45讲】索引部分整理</a></li>
+                <li><strong>本文作者：</strong><a href="https://blog.jacian.com">Jacian</a></li>
+                <li><strong>本文链接：</strong><a href="https://blog.jacian.com/2019/12/1576161512799/">https://blog.jacian.com/2019/12/1576161512799/</a></li>
+                <li><strong>发布时间：</strong>2019-12-26</li>
+                <li><strong>版权声明：</strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+                </li>
+            </ul>
+        
+        
+        <hr style="height:1px;margin:1rem 0"/>
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <i class="fas fa-tags has-text-grey"></i>&nbsp;
+                    <a class="has-link-grey -link" href="/tags/MySQL-索引/">MySQL,索引</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="https://img.jacian.com/ali_pay.png" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="https://img.jacian.com/wx_pay.png" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/01/1578037501256/">
+                <i class="level-item fas fa-chevron-left" style="color: #fff;"></i>
+                <span class="level-item" style="color: #fff;">【MySQL实战45讲】日志系统</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/09/1568887656676/">
+                <span class="level-item" style="color: #fff;">为什么StringBuilder是线程不安全的？StringBuffer是线程安全的？</span>
+                <i class="level-item fas fa-chevron-right" style="color: #fff;"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="valine-thread" class="content"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.3.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#valine-thread' ,
+        notify: false,
+        verify: false,
+        app_id: 'joKiamUtP8VJ4WkJllHbMnI3-gzGzoHsz',
+        app_key: 'A5old1pGj3hay75cdNA0mdXg',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!'
+    });
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                    <figure class="image is-128x128 has-mb-6">
+                        <img  src="https://img.jacian.com/boyavatar_squ.gif" alt="Jacian">
+                    </figure>
+                    
+                    <p class="is-size-4 is-block">
+                        Jacian
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Jacian&#39;s Blog
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Beijing,China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level menu-list is-mobile" style="margin-bottom:1rem">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <a href="/archives/">
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        32
+                    </p>
+                    </a>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <a href="/categories/">
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        10
+                    </p>
+                    </a>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <a href="/tags/">
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        18
+                    </p>
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/JacianLiu" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Github" href="https://github.com/JacianLiu">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="CSDN" href="https://blog.csdn.net/qq_40951066">
+                
+                <i class="fab fa-cuttlefish"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="博客园" href="https://www.cnblogs.com/jacian">
+                
+                <i class="fab fa-blogger-b"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="mail" href="mailto:JacianLiu@gmail.com">
+                
+                <i class="fas fa-envelope"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="RSS" href="/atom.xml">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+<div class="card widget column-left is-sticky" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#常见索引模型">
+        <span class="has-mr-6">1</span>
+        <span>常见索引模型</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#Hash表">
+        <span class="has-mr-6">1.1</span>
+        <span>Hash表</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#结构特点">
+        <span class="has-mr-6">1.1.1</span>
+        <span>结构特点</span>
+        </a></li><li>
+        <a class="is-flex" href="#案例">
+        <span class="has-mr-6">1.1.2</span>
+        <span>案例</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#有序数组">
+        <span class="has-mr-6">1.2</span>
+        <span>有序数组</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#结构特点-1">
+        <span class="has-mr-6">1.2.1</span>
+        <span>结构特点</span>
+        </a></li><li>
+        <a class="is-flex" href="#案例-1">
+        <span class="has-mr-6">1.2.2</span>
+        <span>案例</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#二叉搜索树">
+        <span class="has-mr-6">1.3</span>
+        <span>二叉搜索树</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#结构特点-2">
+        <span class="has-mr-6">1.3.1</span>
+        <span>结构特点</span>
+        </a></li><li>
+        <a class="is-flex" href="#案例-2">
+        <span class="has-mr-6">1.3.2</span>
+        <span>案例</span>
+        </a></li></ul></li></ul></li><li>
+        <a class="is-flex" href="#InnoDB索引模型">
+        <span class="has-mr-6">2</span>
+        <span>InnoDB索引模型</span>
+        </a><ul class="menu-list"><ul class="menu-list"><li>
+        <a class="is-flex" href="#B-Tree">
+        <span class="has-mr-6">2.1.1</span>
+        <span>B-Tree</span>
+        </a></li></ul><li>
+        <a class="is-flex" href="#B-树作为数据库索引的优势">
+        <span class="has-mr-6">2.2</span>
+        <span>B+树作为数据库索引的优势</span>
+        </a></li><li>
+        <a class="is-flex" href="#B-Tree-与-B-Tree-的不同">
+        <span class="has-mr-6">2.3</span>
+        <span>B+Tree 与 B-Tree 的不同</span>
+        </a></li><li>
+        <a class="is-flex" href="#索引维护">
+        <span class="has-mr-6">2.4</span>
+        <span>索引维护</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#关于索引重建">
+        <span class="has-mr-6">2.4.1</span>
+        <span>关于索引重建</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#索引类型">
+        <span class="has-mr-6">2.5</span>
+        <span>索引类型</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#主键索引">
+        <span class="has-mr-6">2.5.1</span>
+        <span>主键索引</span>
+        </a></li><li>
+        <a class="is-flex" href="#非主键索引">
+        <span class="has-mr-6">2.5.2</span>
+        <span>非主键索引</span>
+        </a></li><li>
+        <a class="is-flex" href="#基于主键索引和普通查询的查询的区别">
+        <span class="has-mr-6">2.5.3</span>
+        <span>基于主键索引和普通查询的查询的区别</span>
+        </a></li><li>
+        <a class="is-flex" href="#聚簇索引的注意点有哪些？">
+        <span class="has-mr-6">2.5.4</span>
+        <span>聚簇索引的注意点有哪些？</span>
+        </a></li><li>
+        <a class="is-flex" href="#什么场景适合使用业务字段直接做主键？">
+        <span class="has-mr-6">2.5.5</span>
+        <span>什么场景适合使用业务字段直接做主键？</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#覆盖索引">
+        <span class="has-mr-6">2.6</span>
+        <span>覆盖索引</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#覆盖索引的优势">
+        <span class="has-mr-6">2.6.1</span>
+        <span>覆盖索引的优势</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#联合索引">
+        <span class="has-mr-6">2.7</span>
+        <span>联合索引</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#业务例子">
+        <span class="has-mr-6">2.7.1</span>
+        <span>业务例子</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#最左前缀原则">
+        <span class="has-mr-6">2.8</span>
+        <span>最左前缀原则</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#前提">
+        <span class="has-mr-6">2.8.1</span>
+        <span>前提</span>
+        </a></li><li>
+        <a class="is-flex" href="#例子">
+        <span class="has-mr-6">2.8.2</span>
+        <span>例子</span>
+        </a></li><li>
+        <a class="is-flex" href="#建立索引时，如何安排索引内的字段排序？">
+        <span class="has-mr-6">2.8.3</span>
+        <span>建立索引时，如何安排索引内的字段排序？</span>
+        </a></li><li>
+        <a class="is-flex" href="#索引创建合理性例子">
+        <span class="has-mr-6">2.8.4</span>
+        <span>索引创建合理性例子</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#索引下推">
+        <span class="has-mr-6">2.9</span>
+        <span>索引下推</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#MyISAM索引实现">
+        <span class="has-mr-6">3</span>
+        <span>MyISAM索引实现</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#索引实现原理">
+        <span class="has-mr-6">3.1</span>
+        <span>索引实现原理</span>
+        </a></li><li>
+        <a class="is-flex" href="#主键索引和辅助索引">
+        <span class="has-mr-6">3.2</span>
+        <span>主键索引和辅助索引</span>
+        </a></li><li>
+        <a class="is-flex" href="#MyISAM-与-InnoDB-的区别">
+        <span class="has-mr-6">3.3</span>
+        <span>MyISAM 与 InnoDB 的区别</span>
+        </a></li></ul></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen is-sticky">
+        
+        </div>
+    
+</div>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer" style="height: 50px;">
+    <div class="container" style="height: 50px;">
+        <div class="level" style="height: 50px">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="https://img.jacian.com/jfavicon.png" alt="【MySQL实战45讲】索引部分整理" height="28">
+                
+                </a>
+                
+            </div>
+            <div class="container" style="text-align:center">
+                    &copy; 2020 <a href="/">Jacian</a>&nbsp;
+                    <!-- Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                            href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a> -->
+                    
+                    <br>
+                    <p class="is-size-7">
+                        <a class="has-text-black" href="http://www.beian.miit.gov.cn/" target="_blank">京ICP备19039488号</a>
+                    </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                        
+                        <!-- <i class="fab fa-creative-commons,fab fa-creative-commons-by,fab fa-creative-commons-nc,fab fa-creative-commons-sa"></i> -->
+                        <i class="fab fa-creative-commons"></i>&nbsp;<i class="fab fa-creative-commons-by"></i>&nbsp;<i class="fab fa-creative-commons-nc"></i>&nbsp;<i class="fab fa-creative-commons-sa"></i>&nbsp;
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdnjs.loli.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.loli.net/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'unfolded'
+        }
+    }
+};
+</script>
+
+
+    <script src="https://cdnjs.loli.net/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" defer></script>
+
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.8/js/lightgallery.min.js" defer></script>
+    <script src="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdnjs.loli.net/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdnjs.loli.net/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
