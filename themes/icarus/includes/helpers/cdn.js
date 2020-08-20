@@ -7,20 +7,20 @@
  *     <%- iconcdn() %>
  */
 const cdn_providers = {
-    // cdnjs: 'https://cdnjs.cloudflare.com/ajax/libs/${ package }/${ version }/${ filename }',
+    // cdnjs: 'https://cdnjs.cloudflare.com/ajax/libs/${package}/${version}/${filename}',
     cdnjs: 'https://cdnjs.loli.net/ajax/libs/${ package }/${ version }/${ filename }',
     jsdelivr: 'https://cdn.jsdelivr.net/npm/${ package }@${ version }/${ filename }',
     unpkg: 'https://unpkg.com/${ package }@${ version }/${ filename }'
 };
 
 const font_providers = {
-    // google: 'https://fonts.googleapis.com/${ type }?family=${ fontname }'
-    google: 'https://fonts.loli.net/${ type }?family=${ fontname }'
+    google: 'https://fonts.googleapis.com/${type}?family=${fontname}'
+    // google: 'https://fonts.loli.net/${ type }?family=${ fontname }'
 };
 
 const icon_providers = {
-    // fontawesome: 'https://use.fontawesome.com/releases/v5.4.1/css/all.css'
-    fontawesome: 'https://cdnjs.loli.net/ajax/libs/font-awesome/5.4.1/css/all.min.css'
+    fontawesome: 'https://use.fontawesome.com/releases/v5.4.1/css/all.css'
+    // fontawesome: 'https://cdnjs.loli.net/ajax/libs/font-awesome/5.4.1/css/all.min.css'
 };
 
 module.exports = function (hexo) {
