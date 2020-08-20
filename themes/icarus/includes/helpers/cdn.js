@@ -14,13 +14,14 @@ const cdn_providers = {
 };
 
 const font_providers = {
-    google: 'https://fonts.googleapis.com/${type}?family=${fontname}'
+    // google: '/css'
+    google: 'https://fonts.proxy.ustclug.org/${type}?family=${fontname}'
     // google: 'https://fonts.loli.net/${ type }?family=${ fontname }'
 };
 
 const icon_providers = {
-    fontawesome: 'https://use.fontawesome.com/releases/v5.4.1/css/all.css'
-    // fontawesome: 'https://cdnjs.loli.net/ajax/libs/font-awesome/5.4.1/css/all.min.css'
+    // fontawesome: 'https://use.fontawesome.com/releases/v5.4.1/css/all.css'
+    fontawesome: '/css/all.css'
 };
 
 module.exports = function (hexo) {
