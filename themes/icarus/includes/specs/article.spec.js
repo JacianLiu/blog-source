@@ -9,7 +9,7 @@ module.exports = {
         theme: {
             [type]: 'string',
             [doc]: 'Code highlight themes\nhttps://github.com/highlightjs/highlight.js/tree/master/src/styles',
-            [defaultValue]: 'atom-one-light'
+            [defaultValue]: 'atom-one-light.min'
         },
         clipboard: {
             [type]: 'boolean',

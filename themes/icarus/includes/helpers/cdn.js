@@ -15,7 +15,7 @@ const cdn_providers = {
 
 const font_providers = {
     // google: '/css'
-    google: 'https://fonts.proxy.ustclug.org/${type}?family=${fontname}'
+    // google: 'https://fonts.proxy.ustclug.org/${type}?family=${fontname}'
     // google: 'https://fonts.loli.net/${ type }?family=${ fontname }'
 };
 

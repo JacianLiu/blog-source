@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.jacian.com/2020/09/1599114101197/</loc>
+    
+    <lastmod>2020-09-03T06:26:17.672Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.jacian.com/2020/05/1589877993415/</loc>
     
-    <lastmod>2020-05-19T08:49:15.376Z</lastmod>
+    <lastmod>2020-09-03T06:24:49.920Z</lastmod>
     
   </url>
   
@@ -250,13 +257,6 @@
     <loc>https://blog.jacian.com/tags/index.html</loc>
     
     <lastmod>2019-08-26T11:38:48.634Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.jacian.com//404.html</loc>
-    
-    <lastmod>2019-08-26T11:38:48.633Z</lastmod>
     
   </url>
   
