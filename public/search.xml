@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[Spring Bean 声明周期]]></title>
+    <title><![CDATA[Spring Bean 生命周期]]></title>
     <url>%2F2020%2F11%2F1605760727911%2F</url>
     <content type="text"><![CDATA[实例化Bean设置Bean属性值判断是否实现BeanNameAware，如果实现调用其setBeanName方法判断是否实现BeanFactoryAware，如果实现调用其setBeanFactory方法判断是否实现ApplicationContextAware，如果实现调用其setApplicationContext方法调用BeanPostProcessor的预初始化方法判断是否标注@PostConstruct注解，如果有则执行判断是否实现InitializingBean，如果实现调用其afterPropertiesSet方法判断是否配置初始化方法（init-method）调用BeanPostProcessor的后初始化方法是否为singletonsingleton: 将Bean放入SpringIOC的缓存池中prototype: 将Bean交给调用者，后续不进行管理（不参与后续步骤）执行@PreDestory标注的方法调⽤DisposableBean的destory⽅法调⽤属性配置的销毁⽅法（destory-method）]]></content>
       <categories>
