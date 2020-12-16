@@ -82,7 +82,8 @@ stylus:
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/JacianLiu/JacianLiu.github.io
+  #repo: https://github.com/JacianLiu/JacianLiu.github.io
+  repo: git@github.com:JacianLiu/JacianLiu.github.io.git
   # repo: https://GH_TOKEN@github.com/JacianLiu/JacianLiu.github.io.git
   #repo: https://gitee.com/Jacian/blog.git
   branch: master
