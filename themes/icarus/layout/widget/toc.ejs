@@ -25,6 +25,17 @@ function buildToc(toc) {
     }
     return result;
 }
+
+function fontNumber (date) {
+    const length = date.length
+    if (length > 30) {
+        var str = ''
+        str = date.substring(0, 30) + '......'
+        return str
+    } else {
+        return date
+    }
+}
 %>
 <div class="card widget column-left is-sticky" id="toc">
     <div class="card-content">
