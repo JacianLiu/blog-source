@@ -5,7 +5,7 @@ keywords: "Jacian,Java,MySQL,Blog,博客,Jacian's Blog"
 author: Jacian
 language: zh-CN
 timezone: 'Asia/Shanghai'
-url: https://blog.jacian.com
+url: http://jacian.com
 permalink: ':year/:month/:day/:hash/'
 permalink_defaults: null
 pretty_urls:

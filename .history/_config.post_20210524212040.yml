@@ -1,0 +1,13 @@
+widgets:
+    - # Where should the widget be placed, left sidebar or right sidebar
+      position: left
+      type: toc
+      index: true
+      collapsed: true
+      depth: 3
+    - type: recent_posts
+      position: left
+    - type: categories
+      position: left
+    - type: tags
+      position: left

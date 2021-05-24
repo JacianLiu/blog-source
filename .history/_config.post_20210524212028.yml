@@ -1,0 +1,17 @@
+widgets:
+    - # Where should the widget be placed, left sidebar or right sidebar
+      position: left
+      type: toc
+      # Whether to show the index of each heading
+      index: true
+      # Whether to collapse sub-headings when they are out-of-view
+      collapsed: true
+      # Maximum level of headings to show (1-6)
+      depth: 3
+    # Recommendation links widget configurations
+    - type: recent_posts
+      position: left
+    - type: categories
+      position: left
+    - type: tags
+      position: left

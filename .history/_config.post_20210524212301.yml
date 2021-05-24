@@ -1,0 +1,32 @@
+widgets:
+    - # Where should the widget be placed, left sidebar or right sidebar
+      position: left
+      type: profile
+      # Author name
+      author: Jacian
+      # Author title
+      author_title: Jacian's Blog
+      # Author's current location
+      location: China,Beijing
+      # URL or path to the avatar image
+      avatar: https://img.jacian.com/boyfavicon.png
+      # Whether show the rounded avatar image
+      avatar_rounded: true
+      # Email address for the Gravatar
+      gravatar:
+      # URL or path for the follow button
+      follow_link: 'https://github.com/jacianliu'
+      # Links to be shown on the bottom of the profile widget
+      social_links:
+          Github:
+              icon: fab fa-github
+              url: 'https://github.com/jacianliu'
+          Dribbble:
+              icon: fab fa-dribbble
+              url: 'mailto:jacianliu@gmail.com'
+    - # Where should the widget be placed, left sidebar or right sidebar
+      position: left
+      type: toc
+      index: true
+      collapsed: true
+      depth: 6
