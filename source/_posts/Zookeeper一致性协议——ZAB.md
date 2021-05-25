@@ -4,7 +4,7 @@ tags:
   - Zookeeper
 categories:
   - Zookeeper
-cover: 'http://img.jacian.com/note/img/20210524201258.jpg'
+cover: 'https://img.jacian.com/note/img/20210524201258.jpg'
 date: 2020-12-30 17:07:00
 ---
 ## ZAB协议简介
