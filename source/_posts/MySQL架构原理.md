@@ -1,3 +1,15 @@
+---
+title: MySQL架构原理
+tags:
+  - MySQL
+categories:
+  - MySQL
+toc: true
+cover: 'https://img.jacian.com/note/img/20210612171726.jpg'
+article-thumbnail: 'false'
+date: 2021-06-12 17:17:00
+---
+
 ## MySQL体系架构
 
 ![MySQL体系架构](https://img.jacian.com/note/img/20210606204741.png)
