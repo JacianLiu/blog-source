@@ -62,7 +62,7 @@ ignore: null
 theme: butterfly
 deploy:
     type: git
-    repo: https://github.com/JacianLiu/blog-static
+    repo: git@github.com:JacianLiu/blog-static.git
     branch: master
 githubcalendar:
     enable: false
