@@ -65,7 +65,7 @@ deploy:
     repo: https://github.com/JacianLiu/blog-static
     branch: master
 githubcalendar:
-    enable: true
+    enable: false
     enable_page: / # 表示只在根目录(首页)显示
     user: JacianLiu # 替换成你 GitHub 的用户名
     layout_id: recent-posts
