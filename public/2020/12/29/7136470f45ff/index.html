@@ -1,0 +1,332 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Zookeeper简介 | Jacian's Blog</title><meta name="keywords" content="Zookeeper"><meta name="author" content="Jacian"><meta name="copyright" content="Jacian"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Zookeeper是⼀个开源的分布式协调服务，其设计⽬标是将那些复杂的且容易出错的分布式⼀致性服务封装起来，构成⼀个⾼效可靠的原语集，并以⼀些简单的接⼝提供给⽤户使⽤。 zookeeper是⼀个典型的分布式数据⼀致性的解决⽅案，分布式应⽤程序可以基于它实现诸如数据订阅&#x2F;发布、负载均衡、命名服务、集群管理、分布式锁和分布式队列等功能。 zookeeper基本概念集群角色 Zookeeper  中引入">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zookeeper简介">
+<meta property="og:url" content="https://blog.jacian.com/2020/12/29/7136470f45ff/index.html">
+<meta property="og:site_name" content="Jacian&#39;s Blog">
+<meta property="og:description" content="Zookeeper是⼀个开源的分布式协调服务，其设计⽬标是将那些复杂的且容易出错的分布式⼀致性服务封装起来，构成⼀个⾼效可靠的原语集，并以⼀些简单的接⼝提供给⽤户使⽤。 zookeeper是⼀个典型的分布式数据⼀致性的解决⽅案，分布式应⽤程序可以基于它实现诸如数据订阅&#x2F;发布、负载均衡、命名服务、集群管理、分布式锁和分布式队列等功能。 zookeeper基本概念集群角色 Zookeeper  中引入">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.jacian.com/note/img/20210524200352.jpg">
+<meta property="article:published_time" content="2020-12-29T15:59:00.000Z">
+<meta property="article:modified_time" content="2021-12-23T08:08:23.595Z">
+<meta property="article:author" content="Jacian">
+<meta property="article:tag" content="Zookeeper">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.jacian.com/note/img/20210524200352.jpg"><link rel="shortcut icon" href="https://img.jacian.com/boyfavicon.ico"><link rel="canonical" href="https://blog.jacian.com/2020/12/29/7136470f45ff/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8912038014459721',
+  enable_page_level_ads: 'true'
+});</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?43475d398f37f7cbe7d4bc30ca902821";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-Y5V8M9NRRF"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y5V8M9NRRF');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Jacian","link":"链接: ","source":"来源: Jacian's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Zookeeper简介',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-23 16:08:23'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://img.jacian.com/boyfavicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://img.jacian.com/note/img/20210524200352.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Jacian's Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Zookeeper简介</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-29T15:59:00.000Z" title="发表于 2020-12-29 23:59:00">2020-12-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-23T08:08:23.595Z" title="更新于 2021-12-23 16:08:23">2021-12-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Zookeeper/">Zookeeper</a></span></div><div class="meta-secondline"></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>Zookeeper是⼀个开源的分布式协调服务，其设计⽬标是将那些复杂的且容易出错的分布式⼀致性服务封装起来，构成⼀个⾼效可靠的原语集，并以⼀些简单的接⼝提供给⽤户使⽤。</p>
+<p>zookeeper是⼀个典型的分布式数据⼀致性的解决⽅案，分布式应⽤程序可以基于它实现诸如数据订阅/发布、负载均衡、命名服务、集群管理、分布式锁和分布式队列等功能。</p>
+<h2 id="zookeeper基本概念"><a href="#zookeeper基本概念" class="headerlink" title="zookeeper基本概念"></a>zookeeper基本概念</h2><h3 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h3><p> <code>Zookeeper</code>  中引入了了 <code>Leader</code> 、  <code>Follower</code> 、 <code>Observer</code> 三种⻆⾊。 <code>Leader</code> 服务器为客户端提供读和写服务，除 <code>Leader</code> 外，其他机器包括 <code>Follower</code> 和  <code>Observer</code>  都能提供读服务。唯⼀的区别在于 <code>Observer</code> 不参与 <code>Leader</code> 选举过程， 不参与写操作的过半写成功策略，因此 <code>Observer</code> 可以在不影响写性能的情况下提升集群的性能。</p>
+<h3 id="会话（session）"><a href="#会话（session）" class="headerlink" title="会话（session）"></a>会话（session）</h3><p>指客户端会话， <strong>⼀个客户端连接是指客户端和服务端之间的⼀个TCP⻓连接</strong> </p>
+<h3 id="数据节点（Znode）"><a href="#数据节点（Znode）" class="headerlink" title="数据节点（Znode）"></a>数据节点（Znode）</h3><p>ZooKeeper将所有数据存储在内存中，数据模型是⼀棵树 （ <code>ZNode Tree</code> ），由斜杠（ <code>/</code> ）进⾏分割的路径，就是⼀个 <code>Znode</code> ，例如 <code>/app/path1</code> 。每个 <code>ZNode</code> 上都 会保存⾃⼰的数据内容，同时还会保存⼀系列属性信息。</p>
+<h3 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h3><p> <code>Zookeeper</code> 会为每个 <code>Znode</code> 维护 ⼀个叫作 <code>Stat </code>的数据结构， <code>Stat</code> 记录了这个 <code>ZNode</code> 的三个数据版本，分别是 <code>version</code> （当前 <code>ZNode</code> 的版 本）、 <code>cversion</code> （当前 <code>ZNode</code> ⼦节点的版本）、 <code>aversion</code> （当前 <code>ZNode</code> 的 <code>ACL</code> 版本）。</p>
+<h3 id="事件监听器（Watcher）"><a href="#事件监听器（Watcher）" class="headerlink" title="事件监听器（Watcher）"></a>事件监听器（Watcher）</h3><p>Wathcer（事件监听器），是Zookeeper中⼀个很重要的特性，Zookeeper允许⽤户在指定节点上注册 ⼀些Watcher，并且在⼀些特定事件触发的时候，Zookeeper服务端会将事件通知到感兴趣的客户端， 该机制是Zookeeper实现分布式协调服务的重要特性</p>
+<h3 id="权限控制（ACL）"><a href="#权限控制（ACL）" class="headerlink" title="权限控制（ACL）"></a>权限控制（ACL）</h3><p>Zookeeper采⽤ACL（Access Control Lists）策略来进⾏权限控制，其定义了如下五种权限：</p>
+<ol>
+<li><strong>CREATE</strong> ：创建⼦节点的权限。</li>
+<li><strong>READ</strong> ：获取节点数据和⼦节点列表的权限。</li>
+<li><strong>WRITE</strong> ：更新节点数据的权限。</li>
+<li><strong>DELETE</strong> ：删除⼦节点的权限。</li>
+<li><strong>ADMIN</strong> ：设置节点ACL的权限。 </li>
+</ol>
+<blockquote>
+<p>其中需要注意的是， <code>CREATE</code> 和 <code>DELETE</code> 这两种权限都是针对⼦节点的权限控制</p>
+</blockquote>
+<h2 id="服务器角色（TODO）"><a href="#服务器角色（TODO）" class="headerlink" title="服务器角色（TODO）"></a>服务器角色（TODO）</h2><h3 id="Leader"><a href="#Leader" class="headerlink" title="Leader"></a>Leader</h3><p>Leader服务器是Zookeeper集群工作的核心，主要工作有以下两个：</p>
+<ul>
+<li>事务请求的唯一调度和矗立着，保证集群事务处理的顺序性</li>
+<li>集群内部个服务器的调度者</li>
+</ul>
+<h3 id="Follower"><a href="#Follower" class="headerlink" title="Follower"></a>Follower</h3><p>ollower服务器是Zookeeper集群状态中的跟随者，其主要⼯作有以下三个：</p>
+<ol>
+<li><p>处理客户端⾮事务性请求（读取数据），转发事务请求给Leader服务器。</p>
+</li>
+<li><p>参与事务请求Proposal的投票。</p>
+</li>
+<li><p>参与Leader选举投票。</p>
+</li>
+</ol>
+<h3 id="Observer"><a href="#Observer" class="headerlink" title="Observer"></a>Observer</h3><p>Observer是ZooKeeper⾃3.3.0版本开始引⼊的⼀个全新的服务器⻆⾊。从字⾯意思看，该服务器充当 了⼀个观察者的⻆⾊——其观察ZooKeeper集群的最新状态变化并将这些状态变更同步过来。</p>
+<p> Observer服务器在⼯作原理上和Follower基本是⼀致的，对于⾮事务请求，都可以进⾏独⽴的处理，⽽ 对于事务请求，则会转发给Leader服务器进⾏处理。 <strong>和Follower唯⼀的区别在于，Observer不参与任何形式的投票</strong> ，包括事务请求Proposal的投票和Leader选举投票。简单地讲，Observer服务器只提供 ⾮事务服务，通常⽤于在不影响集群事务处理能⼒的前提下提升集群的⾮事务处理能⼒。</p>
+<h2 id="Zookeeper数据模型——Znode"><a href="#Zookeeper数据模型——Znode" class="headerlink" title="Zookeeper数据模型——Znode"></a>Zookeeper数据模型——Znode</h2><p> <code>Zookeeper</code> 中所有信息都被保存在一个个数据节点上，这些节点被称为 <code>Znode</code> 。 <code>Znode</code>  是 <code>Zookeeper</code> 中最小的存储单元，在 <code>Znode</code> 上又可以挂 <code>Znode</code> ，这样一层一层下去就形成了 Znode 树，称为 <code>Znode Tree</code> 。</p>
+<p><img src="Untitled.assets/img20201228161314.png"></p>
+<h3 id="Znode-的类型"><a href="#Znode-的类型" class="headerlink" title="Znode 的类型"></a>Znode 的类型</h3><ol>
+<li><p><strong>持久节点：</strong> 是Zookeeper中最常⻅的⼀种节点类型，所谓持久节点，就是指节点被创建后会⼀直存在务器，直到删除操作主动清除。</p>
+</li>
+<li><p><strong>持久顺序节点：</strong> 就是有顺序的持久节点，节点特性和持久节点是⼀样的，只是额外特性表现在顺序上。 顺序特性实质是在创建节点的时候，会在节点名后⾯加上⼀个数字后缀，来表示其顺序。</p>
+</li>
+<li><p><strong>临时节点：</strong> 就是会被⾃动清理掉的节点，它的⽣命周期和客户端会话绑在⼀起，客户端会话结束，节点会被删除掉。与持久性节点不同的是，临时节点不能创建⼦节点。</p>
+</li>
+<li><p><strong>临时顺序节点：</strong> 就是有顺序的临时节点，和持久顺序节点相同，在其创建的时候会在名字后⾯加上数字后缀。</p>
+</li>
+</ol>
+<h3 id="Znode的状态信息"><a href="#Znode的状态信息" class="headerlink" title="Znode的状态信息"></a>Znode的状态信息</h3><p><img src="Untitled.assets/img20201228162420.png"></p>
+<p>整个 ZNode 节点内容包括两部分：节点数据内容和节点状态信息。图中【持久节点顺序】 是数据内容，其他的属于状态信息。</p>
+<ul>
+<li>cZxid 就是 Create ZXID，表示节点被创建时的事务ID。 </li>
+<li>ctime 就是 Create Time，表示节点创建时间。 </li>
+<li>mZxid 就是 Modified ZXID，表示节点最后⼀次被修改时的事务ID。 </li>
+<li>mtime 就是 Modified Time，表示节点最后⼀次被修改的时间。 </li>
+<li>pZxid 表示该节点的⼦节点列表最后⼀次被修改时的事务 ID。只有⼦节点列表变更才会更新 pZxid， ⼦节点内容变更不会更新。 </li>
+<li>cversion 表示⼦节点的版本号。 </li>
+<li>dataVersion 表示内容版本号。 </li>
+<li>aclVersion 标识acl版本 ephemeralOwner 表示创建该临时节点时的会话 sessionID，如果是持久性节点那么值为 0 </li>
+<li>dataLength 表示数据⻓度。 </li>
+<li>numChildren 表示直系⼦节点数。</li>
+</ul>
+<h2 id="Watcher-数据变更通知"><a href="#Watcher-数据变更通知" class="headerlink" title="Watcher-数据变更通知"></a>Watcher-数据变更通知</h2><p>Zookeeper使⽤Watcher机制实现分布式数据的发布/订阅功能。⼀个典型的发布/订阅模型系统定义了⼀种 ⼀对多的订阅关系，能够让多个订阅者同时监听某⼀个主题对象，当这个主题对象⾃身状态变化时，会通知所有订阅者，使它们能够做出相应的处理。</p>
+<p>Zookeeper中引入了Watcher机制实现这种分布式的通知功能。Zookeeper允许客户端向服务端注册一个Watcher监听，当服务端的一些指定事件触发了这个Watcher，那么会向客户端发布一个事件通知来实现分布式的通知功能。</p>
+<p><img src="Untitled.assets/img20201228163122.png"></p>
+<p> <code>Zookeeper</code> 的 <code>Watcher</code> 机制主要包括<strong>客户端线程、客户端WatcherManager、Zookeeper服务器</strong>三部分。</p>
+<p>具体⼯作流程为：</p>
+<ol>
+<li>客户端在向 <code>Zookeeper</code> 服务器注册的，同时会将 <code>Watcher</code> 对象存储在客户端的 <code>WatcherManager</code> 当中。</li>
+<li>当 <code>Zookeeper</code> 服务器触发 <code>Watcher</code> 事件后，会向客户端发送通知。</li>
+<li>客户端线程从 <code>WatcherManager</code> 中取出对应的 <code>Watcher</code> 对象来执⾏回调逻辑。</li>
+</ol>
+<h2 id="ACL-保障数据的安全"><a href="#ACL-保障数据的安全" class="headerlink" title="ACL-保障数据的安全"></a>ACL-保障数据的安全</h2><p>从三个⽅⾯来理解ACL机制：<strong>权限模式（Scheme）、授权对象（ID）、权限 （Permission）</strong>，通常使⽤”scheme: id : permission”来标识⼀个有效的ACL信息。</p>
+<h3 id="权限模式：Scheme"><a href="#权限模式：Scheme" class="headerlink" title="权限模式：Scheme"></a>权限模式：Scheme</h3><ol>
+<li><p>IP：通过IP地址粒度来进⾏权限控制，如”ip:192.168.0.110”表示权限控制针对该IP地址， 同时IP模式可以⽀持按照⽹段⽅式进⾏配置，如 “ip:192.168.0.1/24” 表示针对 <code>192.168.0.*</code> 这个⽹段进⾏权限控制。</p>
+</li>
+<li><p>Digest：是最常⽤的权限控制模式，要更符合我们对权限控制的认识，其使 ⽤”username:password”形式的权限标识来进⾏权限配置，便于区分不同应⽤来进⾏权限控制。当我们通过“username:password”形式配置了权限标识后，Zookeeper会先后对其进⾏SHA-1加密 和BASE64编码。</p>
+</li>
+<li><p>World：是⼀种最开放的权限控制模式，这种权限控制⽅式⼏乎没有任何作⽤，数据节点的访问权限 对所有⽤户开放，即所有⽤户都可以在不进⾏任何权限校验的情况下操作ZooKeeper上的数据。 另外，World模式也可以看作是⼀种特殊的Digest模式，它只有⼀个权限标识，即“ <code>world:anyone</code> ”。</p>
+</li>
+<li><p>Super：顾名思义就是超级⽤户的意思，也是⼀种特殊的Digest模式。在Super模式下，超级 ⽤户可以对任意ZooKeeper上的数据节点进⾏任何操作。</p>
+</li>
+</ol>
+<p><strong>授权对象：ID</strong></p>
+<table>
+<thead>
+<tr>
+<th>权限模 式</th>
+<th>授权对象</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IP</td>
+<td>通常是⼀个IP地址或IP段：例如：192.168.10.110 或192.168.10.1/24</td>
+</tr>
+<tr>
+<td>Digest</td>
+<td>⾃定义，通常是username:BASE64(SHA-1(username:password))例如： zm:sdfndsllndlksfn7c=</td>
+</tr>
+<tr>
+<td>Digest</td>
+<td>只有⼀个ID ：anyone</td>
+</tr>
+<tr>
+<td>Super</td>
+<td>超级⽤户</td>
+</tr>
+</tbody></table>
+<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><p>权限就是指那些通过权限检查后可以被允许执⾏的操作。在ZooKeeper中，所有对数据的操作权限分为 以下五⼤类：</p>
+<ul>
+<li>CREATE（C）：数据节点的创建权限，允许授权对象在该数据节点下创建⼦节点。</li>
+<li>DELETE（D）：⼦节点的删除权限，允许授权对象删除该数据节点的⼦节点。</li>
+<li>READ（R）：数据节点的读取权限，允 许授权对象访问该数据节点并读取其数据内容或⼦节点列表等。</li>
+<li>WRITE（W）：数据节点的更新权 限，允许授权对象对该数据节点进⾏更新操作。</li>
+<li>ADMIN（A）：数据节点的管理权限，允许授权对象 对该数据节点进⾏ ACL 相关的设置操作。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Jacian</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.jacian.com/2020/12/29/7136470f45ff/">https://blog.jacian.com/2020/12/29/7136470f45ff/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.jacian.com" target="_blank">Jacian's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Zookeeper/">Zookeeper</a></div><div class="post_share"></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://img.jacian.com/wx_pay.png" target="_blank"><img class="post-qr-code-img" src="https://img.jacian.com/wx_pay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://img.jacian.com/ali_pay.png" target="_blank"><img class="post-qr-code-img" src="https://img.jacian.com/ali_pay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/30/b40d5e3edd17/"><img class="prev-cover" src="https://img.jacian.com/note/img/20210524201258.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Zookeeper一致性协议——ZAB</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/16/a622d780a1eb/"><img class="next-cover" src="https://img.jacian.com/note/img/20200826163449.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">一文详解Spring循环依赖</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2019/08/27/d43887d6fa3d/" title="Docker搭建Zookeeper&Kafka集群"><img class="cover" src="https://img.jacian.com/FuAw-0Y5N9WOUVU7ks1pVeK5fZtZ" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-08-27</div><div class="title">Docker搭建Zookeeper&Kafka集群</div></div></a></div><div><a href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB"><img class="cover" src="https://img.jacian.com/note/img/20210524201258.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-30</div><div class="title">Zookeeper一致性协议——ZAB</div></div></a></div><div><a href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建"><img class="cover" src="https://img.jacian.com/note/img/20210524220542.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-31</div><div class="title">Zookeeper源码环境搭建</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://img.jacian.com/boyfavicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Jacian</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/JacianLiu"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:JacianLiu@gmail.com" target="_blank" title="Email"><i class="iconfont icon-youxiang1"></i></a><a class="social-icon" href="https://www.cnblogs.com/jacian" target="_blank" title="博客园"><i class="iconfont icon-cnblogs"></i></a><a class="social-icon" href="https://blog.csdn.net/JacianLiu" target="_blank" title="CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://t.me/jacian_6" target="_blank" title="Telegram"><i class="iconfont icon-telegram"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#zookeeper%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">zookeeper基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4%E8%A7%92%E8%89%B2"><span class="toc-number">1.1.</span> <span class="toc-text">集群角色</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%9A%E8%AF%9D%EF%BC%88session%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">会话（session）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%8A%82%E7%82%B9%EF%BC%88Znode%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">数据节点（Znode）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%88%E6%9C%AC"><span class="toc-number">1.4.</span> <span class="toc-text">版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC%E5%99%A8%EF%BC%88Watcher%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">事件监听器（Watcher）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6%EF%BC%88ACL%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">权限控制（ACL）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%A7%92%E8%89%B2%EF%BC%88TODO%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">服务器角色（TODO）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Leader"><span class="toc-number">2.1.</span> <span class="toc-text">Leader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Follower"><span class="toc-number">2.2.</span> <span class="toc-text">Follower</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Observer"><span class="toc-number">2.3.</span> <span class="toc-text">Observer</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Zookeeper%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94Znode"><span class="toc-number">3.</span> <span class="toc-text">Zookeeper数据模型——Znode</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Znode-%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.1.</span> <span class="toc-text">Znode 的类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Znode%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%A1%E6%81%AF"><span class="toc-number">3.2.</span> <span class="toc-text">Znode的状态信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Watcher-%E6%95%B0%E6%8D%AE%E5%8F%98%E6%9B%B4%E9%80%9A%E7%9F%A5"><span class="toc-number">4.</span> <span class="toc-text">Watcher-数据变更通知</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ACL-%E4%BF%9D%E9%9A%9C%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AE%89%E5%85%A8"><span class="toc-number">5.</span> <span class="toc-text">ACL-保障数据的安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%A8%A1%E5%BC%8F%EF%BC%9AScheme"><span class="toc-number">5.1.</span> <span class="toc-text">权限模式：Scheme</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%83%E9%99%90"><span class="toc-number">5.2.</span> <span class="toc-text">权限</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁"><img src="https://img.jacian.com/note/img/20210528011819.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL的锁"/></a><div class="content"><a class="title" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁">MySQL的锁</a><time datetime="2021-06-28T12:28:19.000Z" title="发表于 2021-06-28 20:28:19">2021-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理"><img src="https://img.jacian.com/note/img/20210612171726.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL架构原理"/></a><div class="content"><a class="title" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理">MySQL架构原理</a><time datetime="2021-06-12T09:17:00.000Z" title="发表于 2021-06-12 17:17:00">2021-06-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建"><img src="https://img.jacian.com/note/img/20210524220542.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper源码环境搭建"/></a><div class="content"><a class="title" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建">Zookeeper源码环境搭建</a><time datetime="2020-12-31T07:07:00.000Z" title="发表于 2020-12-31 15:07:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB"><img src="https://img.jacian.com/note/img/20210524201258.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper一致性协议——ZAB"/></a><div class="content"><a class="title" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB">Zookeeper一致性协议——ZAB</a><time datetime="2020-12-30T09:07:00.000Z" title="发表于 2020-12-30 17:07:00">2020-12-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介"><img src="https://img.jacian.com/note/img/20210524200352.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper简介"/></a><div class="content"><a class="title" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介">Zookeeper简介</a><time datetime="2020-12-29T15:59:00.000Z" title="发表于 2020-12-29 23:59:00">2020-12-29</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2021 By Jacian</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://beian.miit.gov.cn/"><img class="icp-icon entered loading" alt="ICP" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/npm/kang-static/Hexo/img/icp.png" data-ll-status="loading"><span>京ICP备19039488号</span></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'blog-0gjteqdgda3097c6',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'blog-0gjteqdgda3097c6',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div></div></body></html>

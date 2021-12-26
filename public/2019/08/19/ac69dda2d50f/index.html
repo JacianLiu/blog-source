@@ -1,0 +1,304 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>分类: hexo | Jacian's Blog</title><meta name="keywords" content="hexo,博客"><meta name="author" content="Jacian"><meta name="copyright" content="Jacian"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="现在越来越多的人喜欢利用Github搭建静态网站，原因不外乎简单省钱。本人也利用hexo+github搭建了本博客，用于分享一些心得。在此过程中，折腾博客的各种配置以及功能占具了我一部分时间，在此详细记录下我是如何利用hexo+github搭建静态博客以及一些配置相关问题，以免过后遗忘，且当备份之用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Hexo&amp;GitHub从零搭建个人博客">
+<meta property="og:url" content="https://blog.jacian.com/2019/08/19/ac69dda2d50f/index.html">
+<meta property="og:site_name" content="Jacian&#39;s Blog">
+<meta property="og:description" content="现在越来越多的人喜欢利用Github搭建静态网站，原因不外乎简单省钱。本人也利用hexo+github搭建了本博客，用于分享一些心得。在此过程中，折腾博客的各种配置以及功能占具了我一部分时间，在此详细记录下我是如何利用hexo+github搭建静态博客以及一些配置相关问题，以免过后遗忘，且当备份之用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png">
+<meta property="article:published_time" content="2019-08-19T07:57:27.000Z">
+<meta property="article:modified_time" content="2021-12-23T08:08:23.600Z">
+<meta property="article:author" content="Jacian">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><link rel="shortcut icon" href="https://img.jacian.com/boyfavicon.ico"><link rel="canonical" href="https://blog.jacian.com/2019/08/19/ac69dda2d50f/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8912038014459721',
+  enable_page_level_ads: 'true'
+});</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?43475d398f37f7cbe7d4bc30ca902821";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-Y5V8M9NRRF"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y5V8M9NRRF');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Jacian","link":"链接: ","source":"来源: Jacian's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '分类: hexo',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-23 16:08:23'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://img.jacian.com/boyfavicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Jacian's Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">基于Hexo&amp;GitHub从零搭建个人博客</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2019-08-19T07:57:27.000Z" title="发表于 2019-08-19 15:57:27">2019-08-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-23T08:08:23.600Z" title="更新于 2021-12-23 16:08:23">2021-12-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/hexo/">hexo</a></span></div><div class="meta-secondline"></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><div class="note info no-icon"><p>现在越来越多的人喜欢利用Github搭建静态网站，原因不外乎简单省钱。本人也利用hexo+github搭建了本博客，用于分享一些心得。在此过程中，折腾博客的各种配置以及功能占具了我一部分时间，在此详细记录下我是如何利用hexo+github搭建静态博客以及一些配置相关问题，以免过后遗忘，且当备份之用。
+</p></div>
+
+<span id="more"></span>
+
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><ul>
+<li>下载&amp;安装node.js，默认会安装npm：<a target="_blank" rel="noopener" href="https://nodejs.org/zh-cn/">https://nodejs.org/zh-cn/</a></li>
+<li>下载&amp;安装git：<a target="_blank" rel="noopener" href="https://git-scm.com/downloads">https://git-scm.com/downloads</a></li>
+<li>下载安装hexo。方法：打开cmd 运行<code>npm install -g hexo</code></li>
+</ul>
+<h3 id="本地搭建hexo静态博客"><a href="#本地搭建hexo静态博客" class="headerlink" title="本地搭建hexo静态博客"></a>本地搭建hexo静态博客</h3><ul>
+<li>新建一个文件夹，如<code>blog</code></li>
+<li>进入该文件夹内，右击运行git，输入：<code>hexo init</code>（生成hexo模板）</li>
+<li>生成完模板，运行<code>npm install</code>（目前貌似不用运行这一步）</li>
+<li>最后运行：<code>hexo s</code> （运行程序，访问本地localhost:4000可以看到博客已经搭建成功）</li>
+</ul>
+<p><img src="https://img.jacian.com/1566207418011.png"></p>
+<h3 id="目录介绍"><a href="#目录介绍" class="headerlink" title="目录介绍"></a>目录介绍</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">├── _config.yml						// 博客配置文件</span><br><span class="line">├── public								// 静态文件存放目录</span><br><span class="line">│   ├── 2019</span><br><span class="line">│   ├── archives</span><br><span class="line">│   ├── css</span><br><span class="line">│   ├── images</span><br><span class="line">│   ├── index.html</span><br><span class="line">│   ├── js</span><br><span class="line">│   └── lib</span><br><span class="line">├── source								</span><br><span class="line">│   └── _posts						// 博文存放路径</span><br><span class="line">└── themes								// 主题路径</span><br><span class="line">    ├── landscape</span><br><span class="line">    └── next</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="将博客与Github关联"><a href="#将博客与Github关联" class="headerlink" title="将博客与Github关联"></a>将博客与Github关联</h3><ul>
+<li>在Github上创建名字为<code>XXX.github.io</code>的项目，<code>XXX</code>为自己的GitHub用户名。</li>
+<li>打开本地的MyBlog文件夹项目内的<code>_config.yml</code>配置文件，将其中的type设置为git</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repository:</span> <span class="string">https://github.com/XXX/XXX.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>运行：<code>npm install hexo-deployer-git –save</code></li>
+<li>运行：<code>hexo g</code>（本地生成静态文件）</li>
+<li>运行：<code>hexo d</code>（将本地静态文件推送至Github）</li>
+</ul>
+<blockquote>
+<p>此时打开 <a target="_blank" rel="noopener" href="https://xxx.github.io/">https://XXX.github.io</a> ，即可看到效果</p>
+</blockquote>
+<div class="note warning"><p>这里注意把文中的 XXX 修改为自己的github用户名</p></div>
+### 更新文章
+
+<ul>
+<li>在<code>blog</code>目录下执行：<code>hexo new “我的第一篇文章”</code>，会在source-&gt;_posts文件夹内生成一个.md文件。</li>
+<li>编辑该文件（遵循Markdown规则）</li>
+<li>修改起始字段<ul>
+<li>title 文章的标题</li>
+<li>date 创建日期 （文件的创建日期 ）</li>
+<li>updated 修改日期 （ 文件的修改日期）</li>
+<li>comments 是否开启评论 true</li>
+<li>tags 标签</li>
+<li>categories 分类</li>
+<li>permalink url中的名字（文件名）</li>
+</ul>
+</li>
+<li>编写正文内容（MakeDown）</li>
+<li><code>hexo clean</code> 删除本地静态文件（public目录）</li>
+<li><code>hexo g</code> 生成本地静态文件（public目录）</li>
+<li><code>hexo deploy</code> 将本地静态文件推送至github（hexo d）</li>
+</ul>
+<h3 id="修改主题"><a href="#修改主题" class="headerlink" title="修改主题"></a>修改主题</h3><blockquote>
+<p>至此，我们的博客就已经搭建完了，发现两个问题，一是丑，二是使用GitHub默认域名不舒服。所以我们要修改一个好看的主题（默认的主题经过一番DIY也能达到不错的效果，这里就不多做演示）和使用自己的域名（可选），非必须，看个人喜好。</p>
+</blockquote>
+<p>目前安装的主题：<a target="_blank" rel="noopener" href="https://github.com/theme-next/hexo-theme-next">Next</a></p>
+<p>更多主题：<a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/wiki/Themes">主题</a></p>
+<p>主题配置文档：<a target="_blank" rel="noopener" href="https://theme-next.iissnan.com/theme-settings.html">Next主题配置</a></p>
+<h4 id="1、在博客的根目录下，也就是上文提到的blog文件夹中，执行clone主题"><a href="#1、在博客的根目录下，也就是上文提到的blog文件夹中，执行clone主题" class="headerlink" title="1、在博客的根目录下，也就是上文提到的blog文件夹中，执行clone主题"></a>1、在博客的根目录下，也就是上文提到的blog文件夹中，执行clone主题</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、修改hexo配置文件"><a href="#2、修改hexo配置文件" class="headerlink" title="2、修改hexo配置文件"></a>2、修改hexo配置文件</h4><p>使用文本编辑器打开<code>blog</code>目录下的<code>_config.yml</code>文件，将 <code>themes</code> 对应的值进行修改，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、重新生成静态文件"><a href="#3、重新生成静态文件" class="headerlink" title="3、重新生成静态文件"></a>3、重新生成静态文件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean</span><br><span class="line"></span><br><span class="line">$ hexo g</span><br><span class="line"></span><br><span class="line">$ hexo s</span><br></pre></td></tr></table></figure>
+
+<p>浏览器打开 <a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000</a> 即可看到效果。确认没问题执行 <code>hexo d</code> 命令更新到GitHub，稍等片刻重新打开  <a target="_blank" rel="noopener" href="https://xxx.github.io/">https://XXX.github.io</a> 便可看到效果；</p>
+<p><img src="https://img.jacian.com/1566208941026.png"></p>
+<h3 id="绑定域名"><a href="#绑定域名" class="headerlink" title="绑定域名"></a>绑定域名</h3><ul>
+<li><p>域名提供商设置</p>
+<p>添加一条CNAME记录：</p>
+<p>CNAME —&gt; XXX.github.io</p>
+</li>
+<li><p>博客添加CNAME文件</p>
+<p>配置完域名解析后，进入博客目录，在<code>source</code>目录下新建<code>CNAME</code>文件，写入域名，如：jacian.com</p>
+</li>
+<li><p>运行：<code>hexo g</code></p>
+</li>
+<li><p>运行：<code>hexo d</code></p>
+</li>
+</ul>
+<p><em>重新发布完，稍等片刻打开自己的域名即可看到效果。至此你的个人博客就已经搭建完毕了；当然，你还可以做一些DIY的设置，在这篇文章中就不一一列举了，可以参考文档或者其他大神的博客去进行一些自定义的设置。</em></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Jacian</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.jacian.com/2019/08/19/ac69dda2d50f/">https://blog.jacian.com/2019/08/19/ac69dda2d50f/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.jacian.com" target="_blank">Jacian's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hexo/">hexo</a><a class="post-meta__tags" href="/tags/%E5%8D%9A%E5%AE%A2/">博客</a></div><div class="post_share"></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://img.jacian.com/wx_pay.png" target="_blank"><img class="post-qr-code-img" src="https://img.jacian.com/wx_pay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://img.jacian.com/ali_pay.png" target="_blank"><img class="post-qr-code-img" src="https://img.jacian.com/ali_pay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2019/08/20/f4450572bd9e/"><img class="prev-cover" src="https://img.jacian.com/FsXFLou47EfW0eRcTBUoyKv6jKZb" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">数组</div></div></a></div><div class="next-post pull-right"><a href="/2019/07/13/db0f0b26d663/"><img class="next-cover" src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">基于Netty-SocketIO的主动推送服务</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://img.jacian.com/boyfavicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Jacian</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/JacianLiu"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:JacianLiu@gmail.com" target="_blank" title="Email"><i class="iconfont icon-youxiang1"></i></a><a class="social-icon" href="https://www.cnblogs.com/jacian" target="_blank" title="博客园"><i class="iconfont icon-cnblogs"></i></a><a class="social-icon" href="https://blog.csdn.net/JacianLiu" target="_blank" title="CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://t.me/jacian_6" target="_blank" title="Telegram"><i class="iconfont icon-telegram"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%90%AD%E5%BB%BAhexo%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2"><span class="toc-number">2.</span> <span class="toc-text">本地搭建hexo静态博客</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.</span> <span class="toc-text">目录介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86%E5%8D%9A%E5%AE%A2%E4%B8%8EGithub%E5%85%B3%E8%81%94"><span class="toc-number">4.</span> <span class="toc-text">将博客与Github关联</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A2%98"><span class="toc-number">5.</span> <span class="toc-text">修改主题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%9C%A8%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%A0%B9%E7%9B%AE%E5%BD%95%E4%B8%8B%EF%BC%8C%E4%B9%9F%E5%B0%B1%E6%98%AF%E4%B8%8A%E6%96%87%E6%8F%90%E5%88%B0%E7%9A%84blog%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%AD%EF%BC%8C%E6%89%A7%E8%A1%8Cclone%E4%B8%BB%E9%A2%98"><span class="toc-number">5.1.</span> <span class="toc-text">1、在博客的根目录下，也就是上文提到的blog文件夹中，执行clone主题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E4%BF%AE%E6%94%B9hexo%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">5.2.</span> <span class="toc-text">2、修改hexo配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6"><span class="toc-number">5.3.</span> <span class="toc-text">3、重新生成静态文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%91%E5%AE%9A%E5%9F%9F%E5%90%8D"><span class="toc-number">6.</span> <span class="toc-text">绑定域名</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁"><img src="https://img.jacian.com/note/img/20210528011819.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL的锁"/></a><div class="content"><a class="title" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁">MySQL的锁</a><time datetime="2021-06-28T12:28:19.000Z" title="发表于 2021-06-28 20:28:19">2021-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理"><img src="https://img.jacian.com/note/img/20210612171726.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL架构原理"/></a><div class="content"><a class="title" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理">MySQL架构原理</a><time datetime="2021-06-12T09:17:00.000Z" title="发表于 2021-06-12 17:17:00">2021-06-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建"><img src="https://img.jacian.com/note/img/20210524220542.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper源码环境搭建"/></a><div class="content"><a class="title" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建">Zookeeper源码环境搭建</a><time datetime="2020-12-31T07:07:00.000Z" title="发表于 2020-12-31 15:07:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB"><img src="https://img.jacian.com/note/img/20210524201258.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper一致性协议——ZAB"/></a><div class="content"><a class="title" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB">Zookeeper一致性协议——ZAB</a><time datetime="2020-12-30T09:07:00.000Z" title="发表于 2020-12-30 17:07:00">2020-12-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介"><img src="https://img.jacian.com/note/img/20210524200352.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper简介"/></a><div class="content"><a class="title" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介">Zookeeper简介</a><time datetime="2020-12-29T15:59:00.000Z" title="发表于 2020-12-29 23:59:00">2020-12-29</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2021 By Jacian</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://beian.miit.gov.cn/"><img class="icp-icon entered loading" alt="ICP" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/npm/kang-static/Hexo/img/icp.png" data-ll-status="loading"><span>京ICP备19039488号</span></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'blog-0gjteqdgda3097c6',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'blog-0gjteqdgda3097c6',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div></div></body></html>

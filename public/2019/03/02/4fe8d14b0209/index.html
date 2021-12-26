@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>分类: SpringBoot | Jacian's Blog</title><meta name="keywords" content="SpringBoot"><meta name="author" content="Jacian"><meta name="copyright" content="Jacian"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="之前在介绍使用JdbcTemplate和Spring-data-jpa时，都使用了单数据源。在单数据源的情况下，Spring Boot的配置非常简单，只需要在application.properties文件中配置连接参数即可。但是往往随着业务量发展，我们通常会进行数据库拆分或是引入其他数据库，从而我们需要配置多个数据源，下面基于之前的JdbcTemplate和Spring-data-jpa例子分别">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot多数据源配置与使用">
+<meta property="og:url" content="https://blog.jacian.com/2019/03/02/4fe8d14b0209/index.html">
+<meta property="og:site_name" content="Jacian&#39;s Blog">
+<meta property="og:description" content="之前在介绍使用JdbcTemplate和Spring-data-jpa时，都使用了单数据源。在单数据源的情况下，Spring Boot的配置非常简单，只需要在application.properties文件中配置连接参数即可。但是往往随着业务量发展，我们通常会进行数据库拆分或是引入其他数据库，从而我们需要配置多个数据源，下面基于之前的JdbcTemplate和Spring-data-jpa例子分别">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.jacian.com/Fq4RJGhYPPg3JLjFikPDYbHg4yp1">
+<meta property="article:published_time" content="2019-03-02T07:00:00.000Z">
+<meta property="article:modified_time" content="2021-12-23T08:08:23.585Z">
+<meta property="article:author" content="Jacian">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.jacian.com/Fq4RJGhYPPg3JLjFikPDYbHg4yp1"><link rel="shortcut icon" href="https://img.jacian.com/boyfavicon.ico"><link rel="canonical" href="https://blog.jacian.com/2019/03/02/4fe8d14b0209/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8912038014459721',
+  enable_page_level_ads: 'true'
+});</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?43475d398f37f7cbe7d4bc30ca902821";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-Y5V8M9NRRF"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y5V8M9NRRF');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Jacian","link":"链接: ","source":"来源: Jacian's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '分类: SpringBoot',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-23 16:08:23'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://img.jacian.com/boyfavicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://img.jacian.com/Fq4RJGhYPPg3JLjFikPDYbHg4yp1')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Jacian's Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SpringBoot多数据源配置与使用</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2019-03-02T07:00:00.000Z" title="发表于 2019-03-02 15:00:00">2019-03-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-23T08:08:23.585Z" title="更新于 2021-12-23 16:08:23">2021-12-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/SpringBoot/">SpringBoot</a></span></div><div class="meta-secondline"></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>之前在介绍使用JdbcTemplate和Spring-data-jpa时，都使用了单数据源。在单数据源的情况下，Spring Boot的配置非常简单，只需要在<code>application.properties</code>文件中配置连接参数即可。但是往往随着业务量发展，我们通常会进行数据库拆分或是引入其他数据库，从而我们需要配置多个数据源，下面基于之前的JdbcTemplate和Spring-data-jpa例子分别介绍两种多数据源的配置方式。<span id="more"></span></p>
+<h3 id="多数据源配置"><a href="#多数据源配置" class="headerlink" title="多数据源配置"></a>多数据源配置</h3><p>创建一个Spring配置类，定义两个DataSource用来读取<code>application.properties</code>中的不同配置。如下例子中，主数据源配置为<code>spring.datasource.primary</code>开头的配置，第二数据源配置为<code>spring.datasource.secondary</code>开头的配置。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class DataSourceConfig &#123;</span><br><span class="line"></span><br><span class="line">    @Bean(name = &quot;primaryDataSource&quot;)</span><br><span class="line">    @Qualifier(&quot;primaryDataSource&quot;)</span><br><span class="line">    @ConfigurationProperties(prefix=&quot;spring.datasource.primary&quot;)</span><br><span class="line">    public DataSource primaryDataSource() &#123;</span><br><span class="line">        return DataSourceBuilder.create().build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean(name = &quot;secondaryDataSource&quot;)</span><br><span class="line">    @Qualifier(&quot;secondaryDataSource&quot;)</span><br><span class="line">    @Primary</span><br><span class="line">    @ConfigurationProperties(prefix=&quot;spring.datasource.secondary&quot;)</span><br><span class="line">    public DataSource secondaryDataSource() &#123;</span><br><span class="line">        return DataSourceBuilder.create().build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的<code>application.properties</code>配置如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring.datasource.primary.url=jdbc:mysql://localhost:3306/test1</span><br><span class="line">spring.datasource.primary.username=root</span><br><span class="line">spring.datasource.primary.password=root</span><br><span class="line">spring.datasource.primary.driver-class-name=com.mysql.jdbc.Driver</span><br><span class="line"></span><br><span class="line">spring.datasource.secondary.url=jdbc:mysql://localhost:3306/test2</span><br><span class="line">spring.datasource.secondary.username=root</span><br><span class="line">spring.datasource.secondary.password=root</span><br><span class="line">spring.datasource.secondary.driver-class-name=com.mysql.jdbc.Driver</span><br></pre></td></tr></table></figure>
+
+<h3 id="JdbcTemplate支持"><a href="#JdbcTemplate支持" class="headerlink" title="JdbcTemplate支持"></a>JdbcTemplate支持</h3><p>对JdbcTemplate的支持比较简单，只需要为其注入对应的datasource即可，如下例子，在创建JdbcTemplate的时候分别注入名为<code>primaryDataSource</code>和<code>secondaryDataSource</code>的数据源来区分不同的JdbcTemplate。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Bean(name = &quot;primaryJdbcTemplate&quot;)</span><br><span class="line">public JdbcTemplate primaryJdbcTemplate(</span><br><span class="line">        @Qualifier(&quot;primaryDataSource&quot;) DataSource dataSource) &#123;</span><br><span class="line">    return new JdbcTemplate(dataSource);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Bean(name = &quot;secondaryJdbcTemplate&quot;)</span><br><span class="line">public JdbcTemplate secondaryJdbcTemplate(</span><br><span class="line">        @Qualifier(&quot;secondaryDataSource&quot;) DataSource dataSource) &#123;</span><br><span class="line">    return new JdbcTemplate(dataSource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来通过测试用例来演示如何使用这两个针对不同数据源的JdbcTemplate。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">@RunWith(SpringJUnit4ClassRunner.class)</span><br><span class="line">@SpringApplicationConfiguration(Application.class)</span><br><span class="line">public class ApplicationTests &#123;</span><br><span class="line"></span><br><span class="line">	@Autowired</span><br><span class="line">	@Qualifier(&quot;primaryJdbcTemplate&quot;)</span><br><span class="line">	protected JdbcTemplate jdbcTemplate1;</span><br><span class="line"></span><br><span class="line">	@Autowired</span><br><span class="line">	@Qualifier(&quot;secondaryJdbcTemplate&quot;)</span><br><span class="line">	protected JdbcTemplate jdbcTemplate2;</span><br><span class="line"></span><br><span class="line">	@Before</span><br><span class="line">	public void setUp() &#123;</span><br><span class="line">		jdbcTemplate1.update(&quot;DELETE  FROM  USER &quot;);</span><br><span class="line">		jdbcTemplate2.update(&quot;DELETE  FROM  USER &quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Test</span><br><span class="line">	public void test() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">		// 往第一个数据源中插入两条数据</span><br><span class="line">		jdbcTemplate1.update(&quot;insert into user(id,name,age) values(?, ?, ?)&quot;, 1, &quot;aaa&quot;, 20);</span><br><span class="line">		jdbcTemplate1.update(&quot;insert into user(id,name,age) values(?, ?, ?)&quot;, 2, &quot;bbb&quot;, 30);</span><br><span class="line"></span><br><span class="line">		// 往第二个数据源中插入一条数据，若插入的是第一个数据源，则会主键冲突报错</span><br><span class="line">		jdbcTemplate2.update(&quot;insert into user(id,name,age) values(?, ?, ?)&quot;, 1, &quot;aaa&quot;, 20);</span><br><span class="line"></span><br><span class="line">		// 查一下第一个数据源中是否有两条数据，验证插入是否成功</span><br><span class="line">		Assert.assertEquals(&quot;2&quot;, jdbcTemplate1.queryForObject(&quot;select count(1) from user&quot;, String.class));</span><br><span class="line"></span><br><span class="line">		// 查一下第一个数据源中是否有两条数据，验证插入是否成功</span><br><span class="line">		Assert.assertEquals(&quot;1&quot;, jdbcTemplate2.queryForObject(&quot;select count(1) from user&quot;, String.class));</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>代码示例</strong></p>
+<p>可以查看下面仓库中的<code>chapter3-2-3</code>目录：</p>
+<ul>
+<li>Github：<a target="_blank" rel="noopener" href="https://github.com/WuliGitH/SpringBoot-Learning-1">https://github.com/WuliGitH/SpringBoot-Learning-1</a></li>
+</ul>
+<p><strong>如果您觉得本文不错，欢迎Star支持，您的关注是我坚持的动力！</strong></p>
+<h3 id="Spring-data-jpa支持"><a href="#Spring-data-jpa支持" class="headerlink" title="Spring-data-jpa支持"></a>Spring-data-jpa支持</h3><p>对于数据源的配置可以沿用上例中<code>DataSourceConfig</code>的实现。</p>
+<p>新增对第一数据源的JPA配置，注意两处注释的地方，用于指定数据源对应的<code>Entity</code>实体和<code>Repository</code>定义位置，用<code>@Primary</code>区分主数据源。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@EnableTransactionManagement</span><br><span class="line">@EnableJpaRepositories(</span><br><span class="line">        entityManagerFactoryRef=&quot;entityManagerFactoryPrimary&quot;,</span><br><span class="line">        transactionManagerRef=&quot;transactionManagerPrimary&quot;,</span><br><span class="line">        basePackages= &#123; &quot;com.didispace.domain.p&quot; &#125;) //设置Repository所在位置</span><br><span class="line">public class PrimaryConfig &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired @Qualifier(&quot;primaryDataSource&quot;)</span><br><span class="line">    private DataSource primaryDataSource;</span><br><span class="line"></span><br><span class="line">    @Primary</span><br><span class="line">    @Bean(name = &quot;entityManagerPrimary&quot;)</span><br><span class="line">    public EntityManager entityManager(EntityManagerFactoryBuilder builder) &#123;</span><br><span class="line">        return entityManagerFactoryPrimary(builder).getObject().createEntityManager();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Primary</span><br><span class="line">    @Bean(name = &quot;entityManagerFactoryPrimary&quot;)</span><br><span class="line">    public LocalContainerEntityManagerFactoryBean entityManagerFactoryPrimary (EntityManagerFactoryBuilder builder) &#123;</span><br><span class="line">        return builder</span><br><span class="line">                .dataSource(primaryDataSource)</span><br><span class="line">                .properties(getVendorProperties(primaryDataSource))</span><br><span class="line">                .packages(&quot;com.didispace.domain.p&quot;) //设置实体类所在位置</span><br><span class="line">                .persistenceUnit(&quot;primaryPersistenceUnit&quot;)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private JpaProperties jpaProperties;</span><br><span class="line"></span><br><span class="line">    private Map&lt;String, String&gt; getVendorProperties(DataSource dataSource) &#123;</span><br><span class="line">        return jpaProperties.getHibernateProperties(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Primary</span><br><span class="line">    @Bean(name = &quot;transactionManagerPrimary&quot;)</span><br><span class="line">    public PlatformTransactionManager transactionManagerPrimary(EntityManagerFactoryBuilder builder) &#123;</span><br><span class="line">        return new JpaTransactionManager(entityManagerFactoryPrimary(builder).getObject());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>新增对第二数据源的JPA配置，内容与第一数据源类似，具体如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@EnableTransactionManagement</span><br><span class="line">@EnableJpaRepositories(</span><br><span class="line">        entityManagerFactoryRef=&quot;entityManagerFactorySecondary&quot;,</span><br><span class="line">        transactionManagerRef=&quot;transactionManagerSecondary&quot;,</span><br><span class="line">        basePackages= &#123; &quot;com.didispace.domain.s&quot; &#125;) //设置Repository所在位置</span><br><span class="line">public class SecondaryConfig &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired @Qualifier(&quot;secondaryDataSource&quot;)</span><br><span class="line">    private DataSource secondaryDataSource;</span><br><span class="line"></span><br><span class="line">    @Bean(name = &quot;entityManagerSecondary&quot;)</span><br><span class="line">    public EntityManager entityManager(EntityManagerFactoryBuilder builder) &#123;</span><br><span class="line">        return entityManagerFactorySecondary(builder).getObject().createEntityManager();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean(name = &quot;entityManagerFactorySecondary&quot;)</span><br><span class="line">    public LocalContainerEntityManagerFactoryBean entityManagerFactorySecondary (EntityManagerFactoryBuilder builder) &#123;</span><br><span class="line">        return builder</span><br><span class="line">                .dataSource(secondaryDataSource)</span><br><span class="line">                .properties(getVendorProperties(secondaryDataSource))</span><br><span class="line">                .packages(&quot;com.didispace.domain.s&quot;) //设置实体类所在位置</span><br><span class="line">                .persistenceUnit(&quot;secondaryPersistenceUnit&quot;)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private JpaProperties jpaProperties;</span><br><span class="line"></span><br><span class="line">    private Map&lt;String, String&gt; getVendorProperties(DataSource dataSource) &#123;</span><br><span class="line">        return jpaProperties.getHibernateProperties(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean(name = &quot;transactionManagerSecondary&quot;)</span><br><span class="line">    PlatformTransactionManager transactionManagerSecondary(EntityManagerFactoryBuilder builder) &#123;</span><br><span class="line">        return new JpaTransactionManager(entityManagerFactorySecondary(builder).getObject());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完成了以上配置之后，主数据源的实体和数据访问对象位于：<code>com.didispace.domain.p</code>，次数据源的实体和数据访问接口位于：<code>com.didispace.domain.s</code>。</p>
+<p>分别在这两个package下创建各自的实体和数据访问接口</p>
+<ul>
+<li>主数据源下，创建User实体和对应的Repository接口</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">public class User &#123;</span><br><span class="line"></span><br><span class="line">    @Id</span><br><span class="line">    @GeneratedValue</span><br><span class="line">    private Long id;</span><br><span class="line"></span><br><span class="line">    @Column(nullable = false)</span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    @Column(nullable = false)</span><br><span class="line">    private Integer age;</span><br><span class="line"></span><br><span class="line">    public User()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    public User(String name, Integer age) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">        this.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 省略getter、setter</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">public interface UserRepository extends JpaRepository&lt;User, Long&gt; &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>从数据源下，创建Message实体和对应的Repository接口</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">public class Message &#123;</span><br><span class="line"></span><br><span class="line">    @Id</span><br><span class="line">    @GeneratedValue</span><br><span class="line">    private Long id;</span><br><span class="line"></span><br><span class="line">    @Column(nullable = false)</span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    @Column(nullable = false)</span><br><span class="line">    private String content;</span><br><span class="line"></span><br><span class="line">    public Message()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    public Message(String name, String content) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">        this.content = content;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 省略getter、setter</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">public interface MessageRepository extends JpaRepository&lt;Message, Long&gt; &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来通过测试用例来验证使用这两个针对不同数据源的配置进行数据操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">@RunWith(SpringJUnit4ClassRunner.class)</span><br><span class="line">@SpringApplicationConfiguration(Application.class)</span><br><span class="line">public class ApplicationTests &#123;</span><br><span class="line"></span><br><span class="line">	@Autowired</span><br><span class="line">	private UserRepository userRepository;</span><br><span class="line">	@Autowired</span><br><span class="line">	private MessageRepository messageRepository;</span><br><span class="line"></span><br><span class="line">	@Test</span><br><span class="line">	public void test() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">		userRepository.save(new User(&quot;aaa&quot;, 10));</span><br><span class="line">		userRepository.save(new User(&quot;bbb&quot;, 20));</span><br><span class="line">		userRepository.save(new User(&quot;ccc&quot;, 30));</span><br><span class="line">		userRepository.save(new User(&quot;ddd&quot;, 40));</span><br><span class="line">		userRepository.save(new User(&quot;eee&quot;, 50));</span><br><span class="line"></span><br><span class="line">		Assert.assertEquals(5, userRepository.findAll().size());</span><br><span class="line"></span><br><span class="line">		messageRepository.save(new Message(&quot;o1&quot;, &quot;aaaaaaaaaa&quot;));</span><br><span class="line">		messageRepository.save(new Message(&quot;o2&quot;, &quot;bbbbbbbbbb&quot;));</span><br><span class="line">		messageRepository.save(new Message(&quot;o3&quot;, &quot;cccccccccc&quot;));</span><br><span class="line"></span><br><span class="line">		Assert.assertEquals(3, messageRepository.findAll().size());</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>代码示例</strong></p>
+<p>可以查看下面仓库中的<code>chapter3-2-4</code>目录：</p>
+<ul>
+<li>Github：<a target="_blank" rel="noopener" href="https://github.com/WuliGitH/SpringBoot-Learning-1">https://github.com/WuliGitH/SpringBoot-Learning-1</a></li>
+</ul>
+<blockquote>
+<p>文章转自 <a target="_blank" rel="noopener" href="http://blog.didispace.com/">“程序猿DD”</a> 博客 ,</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Jacian</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.jacian.com/2019/03/02/4fe8d14b0209/">https://blog.jacian.com/2019/03/02/4fe8d14b0209/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.jacian.com" target="_blank">Jacian's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SpringBoot/">SpringBoot</a></div><div class="post_share"></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://img.jacian.com/wx_pay.png" target="_blank"><img class="post-qr-code-img" src="https://img.jacian.com/wx_pay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://img.jacian.com/ali_pay.png" target="_blank"><img class="post-qr-code-img" src="https://img.jacian.com/ali_pay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2019/03/24/96beb9352dd7/"><img class="prev-cover" src="https://img.jacian.com/Fq4RJGhYPPg3JLjFikPDYbHg4yp1" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">SpringBoot中使用MongoDB数据库</div></div></a></div><div class="next-post pull-right"><a href="/2019/02/28/9d5fee73be1c/"><img class="next-cover" src="https://img.jacian.com/Fq4RJGhYPPg3JLjFikPDYbHg4yp1" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SpringBoot中使用Redis数据库</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2019/05/24/329c8ab61662/" title="SpringBoot-Feign使用"><img class="cover" src="https://img.jacian.com/Fq4RJGhYPPg3JLjFikPDYbHg4yp1" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-05-24</div><div class="title">SpringBoot-Feign使用</div></div></a></div><div><a href="/2019/03/27/80ca930b2a1d/" title="SpringBoot中Web应用的统一异常处理"><img class="cover" src="https://img.jacian.com/Fq4RJGhYPPg3JLjFikPDYbHg4yp1" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-03-27</div><div class="title">SpringBoot中Web应用的统一异常处理</div></div></a></div><div><a href="/2019/04/02/3f72e049239e/" title="SpringBoot中使用@Scheduled创建定时任务"><img class="cover" src="https://img.jacian.com/Fq4RJGhYPPg3JLjFikPDYbHg4yp1" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-04-02</div><div class="title">SpringBoot中使用@Scheduled创建定时任务</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://img.jacian.com/boyfavicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Jacian</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/JacianLiu"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:JacianLiu@gmail.com" target="_blank" title="Email"><i class="iconfont icon-youxiang1"></i></a><a class="social-icon" href="https://www.cnblogs.com/jacian" target="_blank" title="博客园"><i class="iconfont icon-cnblogs"></i></a><a class="social-icon" href="https://blog.csdn.net/JacianLiu" target="_blank" title="CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://t.me/jacian_6" target="_blank" title="Telegram"><i class="iconfont icon-telegram"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E9%85%8D%E7%BD%AE"><span class="toc-number">1.</span> <span class="toc-text">多数据源配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JdbcTemplate%E6%94%AF%E6%8C%81"><span class="toc-number">2.</span> <span class="toc-text">JdbcTemplate支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-data-jpa%E6%94%AF%E6%8C%81"><span class="toc-number">3.</span> <span class="toc-text">Spring-data-jpa支持</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁"><img src="https://img.jacian.com/note/img/20210528011819.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL的锁"/></a><div class="content"><a class="title" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁">MySQL的锁</a><time datetime="2021-06-28T12:28:19.000Z" title="发表于 2021-06-28 20:28:19">2021-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理"><img src="https://img.jacian.com/note/img/20210612171726.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL架构原理"/></a><div class="content"><a class="title" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理">MySQL架构原理</a><time datetime="2021-06-12T09:17:00.000Z" title="发表于 2021-06-12 17:17:00">2021-06-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建"><img src="https://img.jacian.com/note/img/20210524220542.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper源码环境搭建"/></a><div class="content"><a class="title" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建">Zookeeper源码环境搭建</a><time datetime="2020-12-31T07:07:00.000Z" title="发表于 2020-12-31 15:07:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB"><img src="https://img.jacian.com/note/img/20210524201258.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper一致性协议——ZAB"/></a><div class="content"><a class="title" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB">Zookeeper一致性协议——ZAB</a><time datetime="2020-12-30T09:07:00.000Z" title="发表于 2020-12-30 17:07:00">2020-12-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介"><img src="https://img.jacian.com/note/img/20210524200352.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper简介"/></a><div class="content"><a class="title" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介">Zookeeper简介</a><time datetime="2020-12-29T15:59:00.000Z" title="发表于 2020-12-29 23:59:00">2020-12-29</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2021 By Jacian</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://beian.miit.gov.cn/"><img class="icp-icon entered loading" alt="ICP" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/npm/kang-static/Hexo/img/icp.png" data-ll-status="loading"><span>京ICP备19039488号</span></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'blog-0gjteqdgda3097c6',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'blog-0gjteqdgda3097c6',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div></div></body></html>

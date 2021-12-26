@@ -1,0 +1,340 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Jacian's Blog - Jacian's Blog</title><meta name="keywords" content="Jacian,Java,MySQL,Blog,博客,Jacian's Blog"><meta name="author" content="Jacian"><meta name="copyright" content="Jacian"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="Jacian&#39;s Blog">
+<meta property="og:url" content="https://blog.jacian.com/index.html">
+<meta property="og:site_name" content="Jacian&#39;s Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.jacian.com/boyfavicon.png">
+<meta property="article:author" content="Jacian">
+<meta property="article:tag" content="Jacian,Java,MySQL,Blog,博客,Jacian&#39;s Blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.jacian.com/boyfavicon.png"><link rel="shortcut icon" href="https://img.jacian.com/boyfavicon.ico"><link rel="canonical" href="https://blog.jacian.com/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8912038014459721',
+  enable_page_level_ads: 'true'
+});</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?43475d398f37f7cbe7d4bc30ca902821";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-Y5V8M9NRRF"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y5V8M9NRRF');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Jacian","link":"链接: ","source":"来源: Jacian's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Jacian\'s Blog',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2021-12-26 18:24:35'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://img.jacian.com/boyfavicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Jacian's Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁">     <img class="post_bg" src="https://img.jacian.com/note/img/20210528011819.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL的锁"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁">MySQL的锁</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-28T12:28:19.000Z" title="发表于 2021-06-28 20:28:19">2021-06-28</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/MySQL/">MySQL</a></span></div><div class="content">锁分类
+当多个事务或进程访问同一个资源时，为了保证数据的一致性就会用到锁机制，在MySQL中锁有多种不同的分类。
+
+以操作粒度区分
+行级锁、表级锁和页级锁
+
+
+表级锁：每次操作锁住整张表。锁定的粒度大、开销小、加锁快；不会发生死锁，但发生锁冲突的概率极高，并发度最低，应用在InnoDB、MyISAM、BDB中；
+行级锁：每次操作锁住一行数据。锁定的粒度小、开销大、加锁慢；会出现死锁，发生锁冲突的概率极低，并发度最高，应用在InnoDB中；
+页级锁：每次锁定相邻的一组记录。锁定粒度、开销、加锁时间介于行级锁和表级锁之间；会出现死锁，并发度一般，应用在BDB中；
+
+
+
+
+
+行锁
+表锁
+页锁
+
+
+
+MyISAM
+
+√
+
+
+
+BDB
+
+√
+√
+
+
+MyISAM
+√
+√
+
+
+
+以操作类型区分
+读锁、写锁
+
+
+读锁（S）：共享锁，针对同一份数据，多个读操作可以同时进行不会互相影响；
+写锁（X）：排它锁，当前写操作没有完成时，会阻塞其他读和写操作；
+
+
+为了允许行锁和表锁的共存，实现多粒度的锁机制，InnoDB还有两种内部使用的意向锁，这两种意向锁都是表锁：
+
+
+意向读锁（IS）、意向写锁（IX）： ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理">     <img class="post_bg" src="https://img.jacian.com/note/img/20210612171726.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL架构原理"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理">MySQL架构原理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-12T09:17:00.000Z" title="发表于 2021-06-12 17:17:00">2021-06-12</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/MySQL/">MySQL</a></span></div><div class="content">MySQL体系架构
+MySQL Server的架构可以分为以下四层：网络连接层、服务层、存储引擎层和系统文件层。
+网络连接层客户端连接器提供与MySQL服务器连接的支持，支持市面上的主流语言。例如：Java、Python等，它们通过各自的API与MySQL建立连接。
+服务层服务层是MySQL Server的核心，主要包含系统管理和控制工具、连接池、SQL接口、解析器、查询优化器、缓存六个部分。
+连接池负责管理与客户端与服务端的连接，一个线程负责管理一个连接。
+系统管理和控制工具备份恢复、安全管理、集群管理等。
+SQL接口用于接收客户端的SQL指令（DDL、DML、存储过程、视图等），返回用户需要的结果信息。
+解析器负责将客户端的SQL指令解析生成一个解析树。然后根据一些SQL规则检查解析树是否合法。
+查询优化器解析树通过解析器的检查后，交由查询优化器来生成执行计划，与存储引擎层进行交互。
+缓存缓存机制是由一系列小缓存组成的：表缓存、记录缓存、权限缓存、引擎缓存等。如果查询命中缓存则可以直接从缓存中获取结果直接返回。
+存储引擎层存储引擎负责MySQL中数据的存储与提取，与系统文件进行交互 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建">     <img class="post_bg" src="https://img.jacian.com/note/img/20210524220542.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper源码环境搭建"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建">Zookeeper源码环境搭建</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-31T07:07:00.000Z" title="发表于 2020-12-31 15:07:00">2020-12-31</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Zookeeper/">Zookeeper</a></span></div><div class="content">下载源码本文以 Zookeeper 3.5.4 为例，源码下载地址：https://github.com/apache/zookeeper/tree/release-3.5.4
+源码编译在命令行使用 ant 编译的时候出现了一些问题，在网上没有找到解决方案，所以使用 idea 进行编译，希望有知道原因的大佬指点迷津，下图为执行 ant eclipse 后的报错信息
+
+
+下边是具体操作步骤
+
+首先使用 idea 打开项目
+
+右击 build.xml ，选择 Add as Ant Build File 
+
+展开右侧 Ant 侧边栏，双击 eclipse 
+
+等待 build 完成，时间根据自身网络环境而定
+
+编译完成后会产生eclipse 的配置文件
+
+源码导入这时关掉项目窗口，选择 File --&gt; New --&gt; Project from Existing Sources...
+
+选择项目目录，选择导入Eclipse项目，然后一路 Next 
+
+这时候源码就导入成功了~
+启动Zookeeper服务端针对单机版本和集群版本，分别对应两个启动类：
+
+单机：ZooKeeperSe ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB">     <img class="post_bg" src="https://img.jacian.com/note/img/20210524201258.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper一致性协议——ZAB"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB">Zookeeper一致性协议——ZAB</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-30T09:07:00.000Z" title="发表于 2020-12-30 17:07:00">2020-12-30</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Zookeeper/">Zookeeper</a></span></div><div class="content">ZAB协议简介Zookeeper通过ZAB保证分布式事务的最终一致性。
+ZAB全称Zookeeper Atomic Broadcast（ZAB，Zookeeper原子消息广播协议）
+
+ZAB是一种专门为Zookeeper设计的一种支持 崩溃恢复 的 原子广播协议 ，是Zookeeper保证数据一致性的核心算法。ZAB借鉴了Paxos算法，但它不是通用的一致性算法，是特别为Zookeeper设计的。
+
+基于ZAB协议，Zookeeper实现了⼀种主备模式的系统架构来保持集群中各副本之间的数据的⼀致性，表现形式就是使⽤⼀个单⼀的主进程（Leader服务器）来接收并处理客户端的所有事务请求（写请求），并采⽤ZAB的原⼦⼴播协议，将服务器数据的状态变更为事务 Proposal的形式⼴播到所有的Follower进程中。
+
+
+问题提出
+主从架构下，leader 崩溃，数据一致性怎么保证？
+选举 leader 的时候，整个集群无法处理写请求的，如何快速进行 leader 选举？
+
+ZAB过程ZAB协议的核⼼是 定义了对于那些会改变Zookeeper服务器数据状态的事务请求的处理⽅式
+
+所有事务必须由 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/12/29/7136470f45ff/" title="Zookeeper简介">     <img class="post_bg" src="https://img.jacian.com/note/img/20210524200352.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper简介"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介">Zookeeper简介</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-29T15:59:00.000Z" title="发表于 2020-12-29 23:59:00">2020-12-29</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Zookeeper/">Zookeeper</a></span></div><div class="content">Zookeeper是⼀个开源的分布式协调服务，其设计⽬标是将那些复杂的且容易出错的分布式⼀致性服务封装起来，构成⼀个⾼效可靠的原语集，并以⼀些简单的接⼝提供给⽤户使⽤。
+zookeeper是⼀个典型的分布式数据⼀致性的解决⽅案，分布式应⽤程序可以基于它实现诸如数据订阅/发布、负载均衡、命名服务、集群管理、分布式锁和分布式队列等功能。
+zookeeper基本概念集群角色 Zookeeper  中引入了了 Leader 、  Follower 、 Observer 三种⻆⾊。 Leader 服务器为客户端提供读和写服务，除 Leader 外，其他机器包括 Follower 和  Observer  都能提供读服务。唯⼀的区别在于 Observer 不参与 Leader 选举过程， 不参与写操作的过半写成功策略，因此 Observer 可以在不影响写性能的情况下提升集群的性能。
+会话（session）指客户端会话， ⼀个客户端连接是指客户端和服务端之间的⼀个TCP⻓连接 
+数据节点（Znode）ZooKeeper将所有数据存储在内存中，数据模型是⼀棵树 （ ZNode Tree ），由斜杠（ ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/12/16/a622d780a1eb/" title="一文详解Spring循环依赖">     <img class="post_bg" src="https://img.jacian.com/note/img/20200826163449.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一文详解Spring循环依赖"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/16/a622d780a1eb/" title="一文详解Spring循环依赖">一文详解Spring循环依赖</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-16T15:45:37.000Z" title="发表于 2020-12-16 23:45:37">2020-12-16</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Spring/">Spring</a></span></div><div class="content">什么是循环依赖？大家都知道spring的核心是一个实现了AOP的IOC容器，那么IOC容器对于bean的初始化，会遇到以下情况：当BeanA初始化时，它依赖的对象BeanB也需要执行初始化，如果BeanB里也依赖了BeanA,则又会开始执行BeanA的初始化，那么这样会无限循环，导致初始化异常如下所示。
+
+
+
+Spring已经很好的解决了这个问题，这个解决方法就是三级缓存。
+什么是三级缓存？我们以上图中A、B互相依赖为例，spring为了解决循环依赖问题，做了以下步骤：
+
+A通过反射创建的“初级bean”a放入到三级缓存中，再执行a的属性填充，这时发现依赖B，开启B的初始化。
+
+B通过反射生成的“初级bean”b放入到三级缓存中，再执行b的属性填充，这时发现依赖A，开启A的初始化。
+
+从三级缓存中找到a，A不再创建新对象，把它移动到二级缓存中，返回a。
+
+b拿到a的引用，设置到b对应的字段上，属性填充完成，将b从三级缓存暴露到一级缓存中，返回b。
+
+a拿到b的引用，设置到a对应的字段上，属性填充完成，将a从二级缓存暴露到一级缓存中，返回a，A对应的实例Bean初始化完成。
+其简易时序图 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/12/16/c8a9c8065586/" title="IOC容器加载流程">     <img class="post_bg" src="https://img.jacian.com/note/img/20200826163449.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="IOC容器加载流程"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/16/c8a9c8065586/" title="IOC容器加载流程">IOC容器加载流程</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-16T15:32:03.000Z" title="发表于 2020-12-16 23:32:03">2020-12-16</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Spring/">Spring</a></span></div><div class="content">Spring容器的AbstractApplicationContext#refresh()【容器刷新】源码解析；本文只记录大体步骤， 细节部分自行阅读源码；
+AbstractApplicationContext#refresh()是IOC容器加载的主要流程，源代码如下
+
+
+123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110@Override  public void refresh() throws BeansException, IllegalStateException &#123;    // 对象锁加锁    synchronized (this.startupShutdownMonitor ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/11/19/3440e471cbb9/" title="Spring Bean 生命周期">     <img class="post_bg" src="https://img.jacian.com/note/img/20200826163449.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spring Bean 生命周期"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/11/19/3440e471cbb9/" title="Spring Bean 生命周期">Spring Bean 生命周期</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-11-19T04:38:47.000Z" title="发表于 2020-11-19 12:38:47">2020-11-19</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Spring/">Spring</a></span></div><div class="content">
+实例化Bean
+设置Bean属性值
+判断是否实现BeanNameAware，如果实现调用其setBeanName方法
+判断是否实现BeanFactoryAware，如果实现调用其setBeanFactory方法
+判断是否实现ApplicationContextAware，如果实现调用其setApplicationContext方法
+调用BeanPostProcessor的预初始化方法
+判断是否标注@PostConstruct注解，如果有则执行
+判断是否实现InitializingBean，如果实现调用其afterPropertiesSet方法
+判断是否配置初始化方法（init-method）
+调用BeanPostProcessor的后初始化方法
+是否为singleton
+singleton: 将Bean放入SpringIOC的缓存池中
+prototype: 将Bean交给调用者，后续不进行管理（不参与后续步骤）
+
+
+执行@PreDestory标注的方法
+调⽤DisposableBean的destory⽅法
+调⽤属性配置的销毁⽅法（destory-method）
+
+
+</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/09/03/8639a326bbf8/" title="Spring Framework 5.0.x 模块组成、体系结构、整体架构">     <img class="post_bg" src="https://img.jacian.com/note/img/20200826163449.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spring Framework 5.0.x 模块组成、体系结构、整体架构"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/09/03/8639a326bbf8/" title="Spring Framework 5.0.x 模块组成、体系结构、整体架构">Spring Framework 5.0.x 模块组成、体系结构、整体架构</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-09-03T06:21:41.000Z" title="发表于 2020-09-03 14:21:41">2020-09-03</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Spring/">Spring</a></span></div><div class="content">
+核心容器（Core Containe）核心容器提供了Spring框架的基本功能，是其它模块建立的基础，有 spring-core、spring-beans、spring-context、spring-context-support和spring-expression（Expression Language、SpEL）组成。spring-beans和spring-core是spring框架的核心模块。
+
+
+spring-core提供了框架的基本组成部分，包括控制翻转(Inversion of Control, IOC)和依赖注入(Dependency Injection, DI)功能。
+spring-beans提供了BeanFactory，BeanFactory接口是spring框架中的核心接口，它是工厂模式的经典实现。BeanFactory使用控制翻转对应用程序的配置和依赖性规范与实际的应用程序代码进行了分离。但BeanFactory容器实例化后并不会自动创建实例化Bean，只有当Bean被使用的时候BeanFactory容器才会对该Bean进行实例化与依赖关系的装配。
+spring ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/05/19/3463bd4622d4/" title="什么是 IoC？什么是 DI？它们之间是什么关系？">     <img class="post_bg" src="https://img.jacian.com/note/img/20200826163449.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="什么是 IoC？什么是 DI？它们之间是什么关系？"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/05/19/3463bd4622d4/" title="什么是 IoC？什么是 DI？它们之间是什么关系？">什么是 IoC？什么是 DI？它们之间是什么关系？</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-05-19T08:43:58.000Z" title="发表于 2020-05-19 16:43:58">2020-05-19</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Spring/">Spring</a></span></div><div class="content">什么是控制反转（IOC）Ioc—Inversion of Control，即“控制反转”，它是一种设计思想，并不是什么技术；在 Java 中，IOC 意味着将我们设计好的对象交给容器控制，而不是传统的需要时在内部构造直接控制；
+
+
+谁控制谁？控制了什么？
+ 谁控制了谁： IoC 控制了对象；
+ 控制了什么： 主要控制了外部资源的获取，不仅限于对象，包括文件等资源；
+
+什么为正转？什么为反转？
+正转：在我们需要某个对象的时候，需要自己主动的去构建对象以及其所依赖的对象；
+反转：在我们需要某个对象的时候，只需要在 IoC 容器中获取所需对象，无需关心创建过程以及其中的依赖对象；全盘由 IoC 容器帮我们创建对象以及注入其所依赖的对象，在这里我们把对象的控制权反转给了 IoC 容器，所以称为反转；
+
+举个例子在现实生活中，当我们要用到一样东西的时候，第一反应是去找到这样东西，当我们想吃红烧肉的时候，如果没有饭店的支持，我们需要准备：肉、油、白砂糖、佐料等等一系列东西，然后自己去做，在这个过程中，所有的东西都是自己创造的这个过程称为正转；
+然而到了今天，生活变好了加上互联网的兴起，当我们想吃红 ...</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/#content-inner">4</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://img.jacian.com/boyfavicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Jacian</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/JacianLiu"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:JacianLiu@gmail.com" target="_blank" title="Email"><i class="iconfont icon-youxiang1"></i></a><a class="social-icon" href="https://www.cnblogs.com/jacian" target="_blank" title="博客园"><i class="iconfont icon-cnblogs"></i></a><a class="social-icon" href="https://blog.csdn.net/JacianLiu" target="_blank" title="CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://t.me/jacian_6" target="_blank" title="Telegram"><i class="iconfont icon-telegram"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁"><img src="https://img.jacian.com/note/img/20210528011819.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL的锁"/></a><div class="content"><a class="title" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁">MySQL的锁</a><time datetime="2021-06-28T12:28:19.000Z" title="发表于 2021-06-28 20:28:19">2021-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理"><img src="https://img.jacian.com/note/img/20210612171726.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL架构原理"/></a><div class="content"><a class="title" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理">MySQL架构原理</a><time datetime="2021-06-12T09:17:00.000Z" title="发表于 2021-06-12 17:17:00">2021-06-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建"><img src="https://img.jacian.com/note/img/20210524220542.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper源码环境搭建"/></a><div class="content"><a class="title" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建">Zookeeper源码环境搭建</a><time datetime="2020-12-31T07:07:00.000Z" title="发表于 2020-12-31 15:07:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB"><img src="https://img.jacian.com/note/img/20210524201258.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper一致性协议——ZAB"/></a><div class="content"><a class="title" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB">Zookeeper一致性协议——ZAB</a><time datetime="2020-12-30T09:07:00.000Z" title="发表于 2020-12-30 17:07:00">2020-12-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介"><img src="https://img.jacian.com/note/img/20210524200352.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper简介"/></a><div class="content"><a class="title" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介">Zookeeper简介</a><time datetime="2020-12-29T15:59:00.000Z" title="发表于 2020-12-29 23:59:00">2020-12-29</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Docker/"><span class="card-category-list-name">Docker</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Linux/"><span class="card-category-list-name">Linux</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/MySQL/"><span class="card-category-list-name">MySQL</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Spring/"><span class="card-category-list-name">Spring</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/SpringBoot/"><span class="card-category-list-name">SpringBoot</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/WebSocket/"><span class="card-category-list-name">WebSocket</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Zookeeper/"><span class="card-category-list-name">Zookeeper</span><span class="card-category-list-count">3</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/DateTime/" style="font-size: 1.1em; color: #999">DateTime</a> <a href="/tags/Docker/" style="font-size: 1.1em; color: #999">Docker</a> <a href="/tags/Java/" style="font-size: 1.26em; color: #999fa8">Java</a> <a href="/tags/Joda/" style="font-size: 1.1em; color: #999">Joda</a> <a href="/tags/Kafka/" style="font-size: 1.1em; color: #999">Kafka</a> <a href="/tags/Linux/" style="font-size: 1.1em; color: #999">Linux</a> <a href="/tags/MySQL/" style="font-size: 1.34em; color: #99a3b0">MySQL</a> <a href="/tags/Shell/" style="font-size: 1.1em; color: #999">Shell</a> <a href="/tags/SocketIO/" style="font-size: 1.18em; color: #999ca1">SocketIO</a> <a href="/tags/Spring/" style="font-size: 1.42em; color: #99a6b7">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 1.5em; color: #99a9bf">SpringBoot</a> <a href="/tags/WebSocket/" style="font-size: 1.18em; color: #999ca1">WebSocket</a> <a href="/tags/Zookeeper/" style="font-size: 1.34em; color: #99a3b0">Zookeeper</a> <a href="/tags/hexo/" style="font-size: 1.1em; color: #999">hexo</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 1.1em; color: #999">博客</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 1.18em; color: #999ca1">数据结构</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 1.1em; color: #999">线程</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/06/"><span class="card-archive-list-date">六月 2021</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/12/"><span class="card-archive-list-date">十二月 2020</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/11/"><span class="card-archive-list-date">十一月 2020</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/09/"><span class="card-archive-list-date">九月 2020</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/05/"><span class="card-archive-list-date">五月 2020</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2019/09/"><span class="card-archive-list-date">九月 2019</span><span class="card-archive-list-count">3</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2019/08/"><span class="card-archive-list-date">八月 2019</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2019/07/"><span class="card-archive-list-date">七月 2019</span><span class="card-archive-list-count">1</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">38</div></div><div class="webinfo-item"><div class="item-name">已运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2018-06-06T16:00:00.000Z"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2021-12-26T10:24:35.350Z"></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2021 By Jacian</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://beian.miit.gov.cn/"><img class="icp-icon entered loading" alt="ICP" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/npm/kang-static/Hexo/img/icp.png" data-ll-status="loading"><span>京ICP备19039488号</span></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script></div></div></body></html>

@@ -1,0 +1,764 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MySQL的锁 | Jacian's Blog</title><meta name="keywords" content="MySQL"><meta name="author" content="Jacian"><meta name="copyright" content="Jacian"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="锁分类 当多个事务或进程访问同一个资源时，为了保证数据的一致性就会用到锁机制，在MySQL中锁有多种不同的分类。  以操作粒度区分 行级锁、表级锁和页级锁   表级锁：每次操作锁住整张表。锁定的粒度大、开销小、加锁快；不会发生死锁，但发生锁冲突的概率极高，并发度最低，应用在InnoDB、MyISAM、BDB中； 行级锁：每次操作锁住一行数据。锁定的粒度小、开销大、加锁慢；会出现死锁，发生锁冲突的概">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL的锁">
+<meta property="og:url" content="https://blog.jacian.com/2021/06/28/ef14e1b75d72/index.html">
+<meta property="og:site_name" content="Jacian&#39;s Blog">
+<meta property="og:description" content="锁分类 当多个事务或进程访问同一个资源时，为了保证数据的一致性就会用到锁机制，在MySQL中锁有多种不同的分类。  以操作粒度区分 行级锁、表级锁和页级锁   表级锁：每次操作锁住整张表。锁定的粒度大、开销小、加锁快；不会发生死锁，但发生锁冲突的概率极高，并发度最低，应用在InnoDB、MyISAM、BDB中； 行级锁：每次操作锁住一行数据。锁定的粒度小、开销大、加锁慢；会出现死锁，发生锁冲突的概">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.jacian.com/note/img/20210528011819.jpg">
+<meta property="article:published_time" content="2021-06-28T12:28:19.000Z">
+<meta property="article:modified_time" content="2021-12-23T08:08:23.577Z">
+<meta property="article:author" content="Jacian">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.jacian.com/note/img/20210528011819.jpg"><link rel="shortcut icon" href="https://img.jacian.com/boyfavicon.ico"><link rel="canonical" href="https://blog.jacian.com/2021/06/28/ef14e1b75d72/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-8912038014459721',
+  enable_page_level_ads: 'true'
+});</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?43475d398f37f7cbe7d4bc30ca902821";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-Y5V8M9NRRF"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y5V8M9NRRF');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Jacian","link":"链接: ","source":"来源: Jacian's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MySQL的锁',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-23 16:08:23'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://img.jacian.com/boyfavicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://img.jacian.com/note/img/20210528011819.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Jacian's Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MySQL的锁</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-06-28T12:28:19.000Z" title="发表于 2021-06-28 20:28:19">2021-06-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-23T08:08:23.577Z" title="更新于 2021-12-23 16:08:23">2021-12-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/MySQL/">MySQL</a></span></div><div class="meta-secondline"></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="锁分类"><a href="#锁分类" class="headerlink" title="锁分类"></a>锁分类</h2><blockquote>
+<p>当多个事务或进程访问同一个资源时，为了保证数据的一致性就会用到锁机制，在MySQL中锁有多种不同的分类。</p>
+</blockquote>
+<h3 id="以操作粒度区分"><a href="#以操作粒度区分" class="headerlink" title="以操作粒度区分"></a>以操作粒度区分</h3><blockquote>
+<p>行级锁、表级锁和页级锁</p>
+</blockquote>
+<ul>
+<li>表级锁：每次操作锁住整张表。锁定的粒度大、开销小、加锁快；不会发生死锁，但发生锁冲突的概率极高，并发度最低，应用在InnoDB、MyISAM、BDB中；</li>
+<li>行级锁：每次操作锁住一行数据。锁定的粒度小、开销大、加锁慢；会出现死锁，发生锁冲突的概率极低，并发度最高，应用在InnoDB中；</li>
+<li>页级锁：每次锁定相邻的一组记录。锁定粒度、开销、加锁时间介于行级锁和表级锁之间；会出现死锁，并发度一般，应用在BDB中；</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>行锁</th>
+<th>表锁</th>
+<th>页锁</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MyISAM</td>
+<td></td>
+<td>√</td>
+<td></td>
+</tr>
+<tr>
+<td>BDB</td>
+<td></td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>MyISAM</td>
+<td>√</td>
+<td>√</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="以操作类型区分"><a href="#以操作类型区分" class="headerlink" title="以操作类型区分"></a>以操作类型区分</h3><blockquote>
+<p>读锁、写锁</p>
+</blockquote>
+<ul>
+<li>读锁（S）：共享锁，针对同一份数据，多个读操作可以同时进行不会互相影响；</li>
+<li>写锁（X）：排它锁，当前写操作没有完成时，会阻塞其他读和写操作；</li>
+</ul>
+<blockquote>
+<p>为了允许行锁和表锁的共存，实现多粒度的锁机制，InnoDB还有两种内部使用的意向锁，这两种意向锁都是表锁：</p>
+</blockquote>
+<ul>
+<li>意向读锁（IS）、意向写锁（IX）：属于表级锁，S和X主要针对行级锁。在对表记录添加S或X锁之前，会先对表添加IS和IX锁，表明某个事务正在持有某些行的锁、或该事务准备去持有锁；意向锁存在是为了协调锁之间的关系，支持多粒度锁共存；</li>
+</ul>
+<blockquote>
+<p>为什么意向锁是表级锁？</p>
+<p>为了减少确认次数，提升性能：如果意向锁是行锁，需要遍历每一行去确认数据是否已经加锁；如果是表锁的话，只需要判断一次就知道有没有数据行被锁定；</p>
+<p>意向锁是如何支持行级锁、表级锁共存的？</p>
+</blockquote>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><ul>
+<li>S锁：事务A对记录添加了S锁，可以对记录进行读取操作，不能做修改，其它事务可以对改记录追加S锁，但是不能追加X锁，追加X锁需要等记录的S锁全部释放；</li>
+<li>X锁：事务A对记录添加了X锁，可以对记录进行读和修改操作，其它事务不能对该记录做读和修改操作。</li>
+</ul>
+<h4 id="意向锁、共享锁和排它锁之间的兼容关系"><a href="#意向锁、共享锁和排它锁之间的兼容关系" class="headerlink" title="意向锁、共享锁和排它锁之间的兼容关系"></a>意向锁、共享锁和排它锁之间的兼容关系</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>事务A持有：X</th>
+<th>IX</th>
+<th>S</th>
+<th>IS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>事务B获取：X</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>冲突</td>
+</tr>
+<tr>
+<td>IX</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>冲突</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>S</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>IS</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+</tbody></table>
+<ul>
+<li>意向锁相互兼容，因为IX和IS只是表明申请更低层次的级别元素的X、S操作；</li>
+<li>表级S和X、IX不兼容，因为上了表级S锁后，不允许其它事务再加X锁；</li>
+<li>上了表级X锁后，会修改数据，所以表级X锁和 IS、IX、S、X（即使是行排他锁，因为表级锁定的行肯定包括行级锁定的行，所以表级X和IX、行级X）不兼容。</li>
+</ul>
+<h3 id="以操作性能区分"><a href="#以操作性能区分" class="headerlink" title="以操作性能区分"></a>以操作性能区分</h3><blockquote>
+<p>乐观锁、悲观锁</p>
+</blockquote>
+<ul>
+<li>乐观锁：一般采用的方式是对数据记录版本进行对比，在数据更新提交时才会进行冲突检测，如果发现冲突了，则提示错误信息；</li>
+<li>悲观锁：在对一条记录进行修改时，为了避免被其他人修改，在修改数据之前先锁定再修改的方式。共享锁和排它锁是悲观锁的不同实现。</li>
+</ul>
+<h2 id="InnoDB的行锁"><a href="#InnoDB的行锁" class="headerlink" title="InnoDB的行锁"></a>InnoDB的行锁</h2><h3 id="行锁的实现原理"><a href="#行锁的实现原理" class="headerlink" title="行锁的实现原理"></a>行锁的实现原理</h3><p>意向锁是InnoDB自动加的，不需要用户干预；对于  <code>UPDATE</code> 、<code>DELETE</code> 和 <code>INSERT</code>  语句，InnoDB会自动给涉及的数据集增加排他锁（X）；对于普通的 <code>SELECT</code> 语句，InnoDB不会加任何锁；事务也可以通过以下语句显式的给记录集加共享锁 <code>SELECT * FROM table_name WHERE ... LOCK IN SHARE MODE</code> 和排它锁 <code>SELECT * FROM table_name WHERE ... FOR UPDATE</code> 。</p>
+<p>在InnoDB中，支持行锁和表锁，行锁又分为共享锁和排它锁。InnoDB行锁是通过对索引数据页上的记录加锁实现的。由于InnoDB行锁的实现特点，<strong>导致只有通过索引条件检索并且执行计划中真正使用到索引时InnoDB才会使用行锁</strong> ；并且不论使用主键索引、唯一索引、普通索引，InnoDB都会使用行锁来进行加锁，否则InnoDB将使用表锁。由于InnoDB是针对索引加锁，而不是针对记录加锁，所以即使多个事务访问不同行的记录，但如果使用的是相同的索引，还是会出现锁冲突的情况，甚至出现死锁。</p>
+<h3 id="行锁的不同实现"><a href="#行锁的不同实现" class="headerlink" title="行锁的不同实现"></a>行锁的不同实现</h3><p>行锁的主要实现有三种： <code>Record Lock</code> 、 <code>Gap Lock</code> 和 <code>Next-Key Lock</code> 。</p>
+<ul>
+<li>RecordLock：记录锁，锁定单个行记录的锁，RC和RR隔离级别支持。</li>
+<li>GapLock：间隙锁，锁定索引记录间隙，确保索引记录的间隙不变。范围锁，RR隔离级别支持。（加锁之后间隙范围内不允许插入数据，防止发生幻读）<ul>
+<li>Insert Intention：插入意向锁，插入意向锁中虽然含有意向锁三个字，但是它不属于意向锁，而是属于间隙锁，在insert时产生；意向锁是表锁，而插入意向锁是行锁。</li>
+</ul>
+</li>
+<li>Next-Key Lock：临键锁，它是记录锁和间隙锁的结合体，锁住数据的同时锁住数据前后范围。记录锁+范围缩，RR隔离级别支持。</li>
+</ul>
+<blockquote>
+<p><strong>insert 的加锁流程：</strong></p>
+<p>执行 <code>insert</code> 之后，如果没有任何冲突，在 <code>show engine innodb status</code> 命令中是看不到任何锁的，<strong>这是因为 <code>insert</code> 加的是隐式锁。什么是隐式锁？隐式锁的意思就是没有锁！</strong></p>
+<p>所以，根本就不存在先加插入意向锁，再加排他记录锁的说法，在执行 <code>insert</code> 语句时，什么锁都不会加。当其他事务执行 <code>select ... lock in share mode</code> 时触发了隐式锁的转换。</p>
+<p>InnoDb 在插入记录时，是不加锁的。如果事务 A 插入记录且未提交，这时事务 B 尝试对这条记录加锁：事务 B 会先去判断记录上保存的事务 id 是否活跃，如果活跃的话，那么就帮助事务 A 去建立一个锁对象（排他记录锁），然后自身进入等待事务 A 状态，这就是所谓的隐式锁转换为显式锁。</p>
+<p><strong>结论：</strong></p>
+<ol>
+<li>执行 <code>insert</code> 语句，判断是否有和插入意向锁冲突的锁，如果有，加插入意向锁，进入锁等待；如果没有，直接写数据，不加任何锁；</li>
+<li>执行 <code>select ... lock in share mode</code> 语句，判断记录上是否存在活跃的事务，如果存在，则为 <code>insert</code> 事务创建一个排他记录锁，并将自己加入到锁等待队列；</li>
+</ol>
+</blockquote>
+<h3 id="MySQL使用间隙锁的目的"><a href="#MySQL使用间隙锁的目的" class="headerlink" title="MySQL使用间隙锁的目的"></a>MySQL使用间隙锁的目的</h3><p>间隙锁的主要目的是为了防止幻读，其主要通过两个方面实现这个目的：</p>
+<ol>
+<li>防止间隙内有新数据被插入</li>
+<li>防止已存在的数据，更新成间隙内的数据</li>
+</ol>
+<p>另外一方面，是为了满足其恢复和复制的需要。对于基于语句的日志格式的恢复和复制而言，由于MySQL的BINLONG是按照事务提交的先后顺序记录的，因此要正确恢复或者复制数据，就必须满足：在一个事务未提交前，其他并发事务不能插入满足其锁定条件的任何记录，根本原因还是不允许出现幻读。</p>
+<h3 id="锁规则"><a href="#锁规则" class="headerlink" title="锁规则"></a>锁规则</h3><ol>
+<li>规则1：加锁的基本单位是临键锁（Next-key Lock）</li>
+<li>规则2：查找过程中访问的对象才会加锁</li>
+<li>优化1：索引上的<strong>等值查询</strong>，给唯一键加索引的时候，如果查询值存在，临键锁（Next-key Lock）会退化成记录锁（Record Lock）；如果查询值不存在，会按照优化2进行优化</li>
+<li>优化2：索引上的<strong>等值查询</strong>，向右遍历时且最近一个值不满足等值条件时，临键锁（Next-key Lock）会退化成间隙锁（Gap Lock）</li>
+<li>bug1：<strong>唯一索引上</strong>的<strong>范围查询</strong>会访问到不满足条件的第一个值为止。</li>
+</ol>
+<blockquote>
+<p>在mysql8.0.18及以上已经没有这个bug</p>
+</blockquote>
+<h3 id="锁结构"><a href="#锁结构" class="headerlink" title="锁结构"></a>锁结构</h3><p>对不同记录加锁时，如果符合下边这些条件：</p>
+<ul>
+<li>在同一个事务中进行加锁操作</li>
+<li>被加锁的记录在同一个页面中</li>
+<li>加锁的类型是一样的</li>
+<li>等待状态是一样的</li>
+</ul>
+<p>那么这些记录的锁就可以被放到一个<code>锁结构</code>中。</p>
+<h3 id="锁的兼容性"><a href="#锁的兼容性" class="headerlink" title="锁的兼容性"></a>锁的兼容性</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>事务A持有：Gap</th>
+<th>Insert Intention</th>
+<th>Record</th>
+<th>Next-Key</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>事务B获取：Gap</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>Insert Intention</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>冲突</td>
+</tr>
+<tr>
+<td>Record</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>冲突</td>
+<td>冲突</td>
+</tr>
+<tr>
+<td>Next-Key</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>冲突</td>
+<td>冲突</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>从图中可以看出，横向为事务A拥有的锁，竖向为事务B想要获取的锁；举例： 如果前一个事务A <strong>持有 gap 锁 或者 next-key 锁的时候，后一个事务B如果想要持有 Insert Intention 锁的时候会不兼容，出现锁等待</strong>。</p>
+</blockquote>
+<h3 id="加锁"><a href="#加锁" class="headerlink" title="加锁"></a>加锁</h3><ol>
+<li><code>SELECT ... FROM ...</code> ：InnoDB采用MVCC机制实现非阻塞读，对于普通的 SELECT 语句，InnoDB不加锁。</li>
+<li><code>SELECT ... FROM ... LOCK In SHARE MODE</code> ：显式追加共享锁，InnoDB会使用临键锁（Next-key Lock）进行处理，如果发现了唯一索引，可以降级为记录锁（RecordLock）。</li>
+<li><code>SELECT ... FROM ... FOR UPDATE</code> ：显式追加排它锁，InnoDB会使用Next-Key Lock锁进行处理，如果发现唯一索引，可以降级为RecordLock锁。</li>
+<li><code>UPDATE ... WHERE</code> ：InnoDB会使用临键锁（Next-key Lock）进行处理，如果扫描发现唯一索引，可以降级为记录锁（RecordLock）。</li>
+<li><code>DELETE ... WHERE</code>：InnoDB会使用临键锁（Next-key Lock）进行处理，如果扫描发现唯一索引，可以降级为记录锁（RecordLock）。</li>
+<li><code>insert</code>：InnoDB会在将要插入的那一行设置一个排他的记录锁（RecordLock）。</li>
+</ol>
+<p>以 <code>update t1 set name=‘XX’ where id=10</code> 操作为例：</p>
+<h4 id="主键加锁"><a href="#主键加锁" class="headerlink" title="主键加锁"></a>主键加锁</h4><p><img src="https://img.jacian.com/note/img/20210531223413.png" alt="主键加锁"></p>
+<p>加锁行为：仅在id=10的主键索引记录上加X锁。</p>
+<h4 id="唯一键加锁"><a href="#唯一键加锁" class="headerlink" title="唯一键加锁"></a>唯一键加锁</h4><p><img src="https://img.jacian.com/note/img/20210531223428.png" alt="唯一键加锁"></p>
+<p>加锁行为：先在唯一索引id上加X锁，然后在id=10的主键索引记录上加X锁。</p>
+<h4 id="非唯一键加锁"><a href="#非唯一键加锁" class="headerlink" title="非唯一键加锁"></a>非唯一键加锁</h4><p><img src="https://img.jacian.com/note/img/20210531223444.png" alt="非唯一键加锁"></p>
+<p>加锁行为：对满足id=10条件的记录和主键分别加X锁，然后在(6,c)-(10,b)、(10,b)-(10,d)、(10,d)(11,f)范围分别加Gap Lock。</p>
+<h4 id="无索引加锁"><a href="#无索引加锁" class="headerlink" title="无索引加锁"></a>无索引加锁</h4><p><img src="https://img.jacian.com/note/img/20210531223503.png" alt="无索引加锁"></p>
+<p>加锁行为：表里所有行和间隙都会加X锁。（当没有索引时，会导致全表锁定，因为InnoDB引擎 锁机制是基于索引实现的记录锁定）。</p>
+<h2 id="锁模拟"><a href="#锁模拟" class="headerlink" title="锁模拟"></a>锁模拟</h2><p>查看事务、锁的语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 当前运行的所有事务</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> INFORMATION_SCHEMA.INNODB_TRX;</span><br><span class="line"><span class="comment">-- 当前出现的锁</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> INFORMATION_SCHEMA.INNODB_LOCKS;</span><br><span class="line"><span class="comment">-- 锁等待的对应关系</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> INFORMATION_SCHEMA.INNODB_LOCK_WAITS;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果解析：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 当前运行的所有事务 INFORMATION_SCHEMA.INNODB_TRX 表信息</span></span><br><span class="line">root<span class="variable">@127</span><span class="number">.0</span><span class="number">.0</span><span class="number">.1</span> : information_schema <span class="number">13</span>:<span class="number">29</span>:<span class="number">05</span><span class="operator">&gt;</span> <span class="keyword">desc</span> innodb_trx ;</span><br><span class="line"><span class="operator">+</span>—————————<span class="operator">-</span><span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">+</span>—–<span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Field <span class="operator">|</span> Type <span class="operator">|</span> <span class="keyword">Null</span> <span class="operator">|</span> Key <span class="operator">|</span> <span class="keyword">Default</span> <span class="operator">|</span> Extra <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>—————————<span class="operator">-</span><span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">+</span>—–<span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> trx_id <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">18</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#事务ID</span><br><span class="line"><span class="operator">|</span> trx_state <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">13</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#事务状态：</span><br><span class="line"><span class="operator">|</span> trx_started <span class="operator">|</span> datetime <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0000</span><span class="number">-00</span><span class="number">-00</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> <span class="operator">|</span> <span class="operator">|</span>#事务开始时间；</span><br><span class="line"><span class="operator">|</span> trx_requested_lock_id <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">81</span>) <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#innodb_locks.lock_id</span><br><span class="line"><span class="operator">|</span> trx_wait_started <span class="operator">|</span> datetime <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#事务开始等待的时间</span><br><span class="line"><span class="operator">|</span> trx_weight <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#</span><br><span class="line"><span class="operator">|</span> trx_mysql_thread_id <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#事务线程ID</span><br><span class="line"><span class="operator">|</span> trx_query <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">1024</span>) <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#具体<span class="keyword">SQL</span>语句</span><br><span class="line"><span class="operator">|</span> trx_operation_state <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">64</span>) <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#事务当前操作状态</span><br><span class="line"><span class="operator">|</span> trx_tables_in_use <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#事务中有多少个表被使用</span><br><span class="line"><span class="operator">|</span> trx_tables_locked <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#事务拥有多少个锁</span><br><span class="line"><span class="operator">|</span> trx_lock_structs <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#</span><br><span class="line"><span class="operator">|</span> trx_lock_memory_bytes <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#事务锁住的内存大小（B）</span><br><span class="line"><span class="operator">|</span> trx_rows_locked <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#事务锁住的行数</span><br><span class="line"><span class="operator">|</span> trx_rows_modified <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#事务更改的行数</span><br><span class="line"><span class="operator">|</span> trx_concurrency_tickets <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#事务并发票数</span><br><span class="line"><span class="operator">|</span> trx_isolation_level <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">16</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#事务隔离级别</span><br><span class="line"><span class="operator">|</span> trx_unique_checks <span class="operator">|</span> <span class="type">int</span>(<span class="number">1</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#是否唯一性检查</span><br><span class="line"><span class="operator">|</span> trx_foreign_key_checks <span class="operator">|</span> <span class="type">int</span>(<span class="number">1</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#是否外键检查</span><br><span class="line"><span class="operator">|</span> trx_last_foreign_key_error <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">256</span>) <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#最后的外键错误</span><br><span class="line"><span class="operator">|</span> trx_adaptive_hash_latched <span class="operator">|</span> <span class="type">int</span>(<span class="number">1</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#</span><br><span class="line"><span class="operator">|</span> trx_adaptive_hash_timeout <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="operator">|</span>#</span><br><span class="line"><span class="operator">+</span>—————————<span class="operator">-</span><span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">+</span>—–<span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 当前出现的锁 INFORMATION_SCHEMA.INNODB_LOCKS 信息</span></span><br><span class="line">root<span class="variable">@127</span><span class="number">.0</span><span class="number">.0</span><span class="number">.1</span> : information_schema <span class="number">13</span>:<span class="number">28</span>:<span class="number">38</span><span class="operator">&gt;</span> <span class="keyword">desc</span> innodb_locks;</span><br><span class="line"><span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">+</span>—–<span class="operator">+</span>———<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Field <span class="operator">|</span> Type <span class="operator">|</span> <span class="keyword">Null</span> <span class="operator">|</span> Key <span class="operator">|</span> <span class="keyword">Default</span> <span class="operator">|</span> Extra <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">+</span>—–<span class="operator">+</span>———<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> lock_id <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">81</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#锁ID</span><br><span class="line"><span class="operator">|</span> lock_trx_id <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">18</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#拥有锁的事务ID</span><br><span class="line"><span class="operator">|</span> lock_mode <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">32</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#锁模式</span><br><span class="line"><span class="operator">|</span> lock_type <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">32</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#锁类型</span><br><span class="line"><span class="operator">|</span> lock_table <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">1024</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#被锁的表</span><br><span class="line"><span class="operator">|</span> lock_index <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">1024</span>) <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#被锁的索引</span><br><span class="line"><span class="operator">|</span> lock_space <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#被锁的表空间号</span><br><span class="line"><span class="operator">|</span> lock_page <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#被锁的页号</span><br><span class="line"><span class="operator">|</span> lock_rec <span class="operator">|</span> <span class="type">bigint</span>(<span class="number">21</span>) unsigned <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#被锁的记录号</span><br><span class="line"><span class="operator">|</span> lock_data <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">8192</span>) <span class="operator">|</span> YES <span class="operator">|</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="operator">|</span>#被锁的数据</span><br><span class="line"><span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span>———————<span class="operator">+</span>——<span class="operator">+</span>—–<span class="operator">+</span>———<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--  锁等待的对应关系 INFORMATION_SCHEMA.INNODB_LOCK_WAITS 信息</span></span><br><span class="line">root<span class="variable">@127</span><span class="number">.0</span><span class="number">.0</span><span class="number">.1</span> : information_schema <span class="number">13</span>:<span class="number">28</span>:<span class="number">56</span><span class="operator">&gt;</span> <span class="keyword">desc</span> innodb_lock_waits;</span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span>——<span class="operator">+</span>—–<span class="operator">+</span>———<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> Field <span class="operator">|</span> Type <span class="operator">|</span> <span class="keyword">Null</span> <span class="operator">|</span> Key <span class="operator">|</span> <span class="keyword">Default</span> <span class="operator">|</span> Extra <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span>——<span class="operator">+</span>—–<span class="operator">+</span>———<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"><span class="operator">|</span> requesting_trx_id <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">18</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#请求锁的事务ID</span><br><span class="line"><span class="operator">|</span> requested_lock_id <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">81</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#请求锁的锁ID</span><br><span class="line"><span class="operator">|</span> blocking_trx_id <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">18</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#当前拥有锁的事务ID</span><br><span class="line"><span class="operator">|</span> blocking_lock_id <span class="operator">|</span> <span class="type">varchar</span>(<span class="number">81</span>) <span class="operator">|</span> <span class="keyword">NO</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span> <span class="operator">|</span>#当前拥有锁的锁ID</span><br><span class="line"><span class="operator">+</span>——————<span class="operator">-</span><span class="operator">+</span>————<span class="operator">-</span><span class="operator">+</span>——<span class="operator">+</span>—–<span class="operator">+</span>———<span class="operator">+</span>——<span class="operator">-</span><span class="operator">+</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>数据准备：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 建表语句</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `t` (</span><br><span class="line">	`id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">	`c` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">	`d` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">	<span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">	KEY `c` (`c`)</span><br><span class="line">) ENGINE <span class="operator">=</span> InnoDB CHARSET <span class="operator">=</span> utf8 <span class="keyword">COLLATE</span> utf8_bin;</span><br><span class="line"><span class="comment">-- 数据准备</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t`(`id`, `c`, `d`) <span class="keyword">VALUES</span> (<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t`(`id`, `c`, `d`) <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t`(`id`, `c`, `d`) <span class="keyword">VALUES</span> (<span class="number">10</span>, <span class="number">10</span>, <span class="number">11</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t`(`id`, `c`, `d`) <span class="keyword">VALUES</span> (<span class="number">15</span>, <span class="number">15</span>, <span class="number">15</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t`(`id`, `c`, `d`) <span class="keyword">VALUES</span> (<span class="number">20</span>, <span class="number">20</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t`(`id`, `c`, `d`) <span class="keyword">VALUES</span> (<span class="number">25</span>, <span class="number">25</span>, <span class="number">25</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img.jacian.com/note/img/20210531224743.png" alt="数据"></p>
+<h3 id="锁举例"><a href="#锁举例" class="headerlink" title="锁举例"></a>锁举例</h3><blockquote>
+<p>锁等待超时：ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction</p>
+<p>死锁：1213 Deadlock found when trying to get lock</p>
+</blockquote>
+<h4 id="等值查询间隙锁"><a href="#等值查询间隙锁" class="headerlink" title="等值查询间隙锁"></a>等值查询间隙锁</h4><table>
+<thead>
+<tr>
+<th>Session 1</th>
+<th>Session 2</th>
+<th>Session 1</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>begin;<br />UPDATE t SET d = d+1 WHERE id=7;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>begin;<br />INSERT INTO t VALUES(8,8,8);  – 阻塞</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>begin;<br />INSERT INTO t VALUES(11, 11, 11); – 不阻塞</td>
+</tr>
+</tbody></table>
+<p>分析：</p>
+<ol>
+<li>由于表T没有 <code>id=7</code> 这条记录，加锁单位是 <code>Next-key Lock</code> ，事务1加锁范围是 <code>(5, 10]</code> ，因为 <code>id=7</code> 是一个等值查询，根据优化规则， <code>id=10</code> 不满足条件， <code>Next-key Lock</code> 退化成 <code>Gap Lock</code> ，因此最终加锁范围是 <code>(5, 10)</code> 。</li>
+<li><code>Session2</code> 想要向这个间隙中插入 <code>id=8</code> 的记录必须等待 <code>Session1</code> 事务提交后才可以。</li>
+<li><code>Session3</code> 想要插入 <code>id=11</code> ，不在加锁范围，所以可以插入成功。</li>
+</ol>
+<blockquote>
+<p>这是如果有 <code>Session4</code> 想要更新 <code>id=8</code> 的记录，是可以执行成功的，因为间隙锁之间互不冲突；</p>
+</blockquote>
+<h4 id="非唯一键等值锁"><a href="#非唯一键等值锁" class="headerlink" title="非唯一键等值锁"></a>非唯一键等值锁</h4><table>
+<thead>
+<tr>
+<th>Session 1</th>
+<th>Session 2</th>
+<th>Session 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>begin;<br />SELECT id FROM t WHERE c=5 LOCK IN SHARE MODE;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>begin;<br />INERT INTO t VALUES(7,7,7); – 阻塞</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>begin;<br />UPDATE t SET d=d+1 WHERE id=5; – 不阻塞</td>
+</tr>
+</tbody></table>
+<p>分析：</p>
+<ol>
+<li><code>Session1</code> 给索引 c 上的 c=5 这一列加上读锁，根据规则1，加锁单位为 <code>Next-key Lock</code> ，因此会给 (0, 5] 区间加上 <code>Next-key Lock</code></li>
+<li>因为c是普通索引，所以访问 c=5 之后还要向右遍历，直到 c=10 停止，根据规则2访问到的都要加锁，所以加锁范围为 (5, 10] ，根据优化2，等值查询退化为 <code>Gap Lock</code> ，变为 (5, 10)，所以最终的加锁范围是 (0, 10)；</li>
+<li><code>Session2</code> 想要插入 id=7 的记录，要等待 <code>Session1</code> 提交之后才可以成功插入，因为 <code>Session1</code> 的间隙范围是(5, 10)；</li>
+<li>根据原则2，访问到的对象才会加锁，这个查询使用覆盖索引，并不需要访问主键索引，所以主键索引上没有加任何锁。所以 <code>Session3</code> 的语句可以正常执行；</li>
+</ol>
+<blockquote>
+<p>LOCK IN SHARE MODE; 只锁覆盖索引，FOR UPDATE; 会顺便锁上主键索引；</p>
+</blockquote>
+<h4 id="主键索引范围锁"><a href="#主键索引范围锁" class="headerlink" title="主键索引范围锁"></a>主键索引范围锁</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id<span class="operator">=</span><span class="number">10</span> <span class="keyword">for</span> update;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id<span class="operator">&gt;=</span><span class="number">10</span> <span class="keyword">and</span> id<span class="operator">&lt;</span><span class="number">11</span> <span class="keyword">for</span> update;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>对于以上两条SQL，加锁的范围不一致，第一条是id=10 的行锁，第二条是 (10, 15] 的 <code>Next-key Lock</code> </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Session1</th>
+<th>Session2</th>
+<th>Session3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>begin;<br />select * from t where id&gt;=10 and id&lt;11 for update;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>begin;<br />insert into t values(9,9,9); – 不阻塞<br />insert into t values(11,11,11); – 阻塞</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>update t set d=d+1 where id=15; – 阻塞</td>
+</tr>
+</tbody></table>
+<p>分析：</p>
+<ol>
+<li><code>Session1</code> 根据规则1，加锁单位为 <code>Next-key Lock</code> ，因为 id&gt;=10 是范围查询，直到找到 id=15 停止，最终 <code>Session1</code> 的加锁范围是 (10, 15]</li>
+<li><code>Session3</code> 当去 update 一个存在的值是，给该行添加 <code>Record Lock</code> ，由于 <code>Record Lock</code> 和 <code>Next-key Lock</code> 不兼容，所以阻塞</li>
+</ol>
+<blockquote>
+<p>如果 <code>Session3</code> 更新一个 (10, 15) 的值，则会阻塞；</p>
+</blockquote>
+<h4 id="非唯一索引范围锁"><a href="#非唯一索引范围锁" class="headerlink" title="非唯一索引范围锁"></a>非唯一索引范围锁</h4><table>
+<thead>
+<tr>
+<th>Session1</th>
+<th>Session2</th>
+<th>Session3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>begin;<br />select * from t where c&gt;=10 and c&lt;11 for update;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>begin;<br />insert into t values(8,8,8); – 阻塞</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>begin;<br />update t set d=d+1 where c=15; – 阻塞</td>
+</tr>
+</tbody></table>
+<p>分析：</p>
+<ol>
+<li><code>Session1</code> 给索引c加上了 (5,10], (10,15] 两个 <code>Next-key Lock</code> ；由于是范围查询，不触发优化，不会退化成间隙锁</li>
+</ol>
+<h4 id="非唯一索引等值锁for-Update"><a href="#非唯一索引等值锁for-Update" class="headerlink" title="非唯一索引等值锁for Update"></a>非唯一索引等值锁for Update</h4><p>数据准备：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> IF <span class="keyword">EXISTS</span> `t`;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `t1` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `a` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  KEY `idx_a` (`a`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8;</span><br><span class="line"></span><br><span class="line"><span class="keyword">BEGIN</span>;</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t1` <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="number">1</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t1` <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="number">3</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t1` <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t1` <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="number">8</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `t1` <span class="keyword">VALUES</span> (<span class="number">6</span>, <span class="number">11</span>);</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在表t中，a列有普通索引，所以可能锁定的范围有：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="operator">-</span>∞, <span class="number">1</span>], (<span class="number">1</span>, <span class="number">3</span>], (<span class="number">3</span>, <span class="number">5</span>], (<span class="number">5</span>, <span class="number">8</span>], (<span class="number">8</span>, <span class="number">11</span>], (<span class="number">11</span>, <span class="operator">+</span>∞)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>session1</th>
+<th>session2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>begin;<br />select * from t1 where a=8 for update;</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>begin;<br />insert into t1 (a) values (12); – 不会阻塞<br />insert into t1 (a) values (11); – 不会阻塞<br />insert into t1 (a) values (4); – 不会阻塞<br />insert into t1 (a) values (5); – 阻塞</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><code>Session1</code> 执行完成之后预期加锁范围为 (5, 8] 和 (8, 11]，由于锁优化策略，退化成间隙锁，范围变成 (5, 8] 和 (8, 11) ，也就是 (5, 11) ，插入12和4不会阻塞很好理解。但是 5不在锁的范围内，还是被锁上了</p>
+<p>是因为如果索引值相同的话，会根据id进行排序加锁，所以最终的加锁范围是索引a的 (5, 4) 到 (11, 6) 的范围</p>
+<p><img src="https://img.jacian.com/note/img/20210609234749.jpg" alt="锁范围"></p>
+<h3 id="死锁模拟"><a href="#死锁模拟" class="headerlink" title="死锁模拟"></a>死锁模拟</h3><h4 id="死锁模拟-场景1"><a href="#死锁模拟-场景1" class="headerlink" title="死锁模拟-场景1"></a>死锁模拟-场景1</h4><p>AB BA操作问题</p>
+<p>数据准备：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `t2` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `stu_num` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `score` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `idx_uniq_stu_num` (`stu_num`),</span><br><span class="line">  KEY `idx_score` (`score`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(id, stu_num, score) <span class="keyword">values</span> (<span class="number">1</span>, <span class="number">11</span>, <span class="number">111</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(id, stu_num, score) <span class="keyword">values</span> (<span class="number">2</span>, <span class="number">22</span>, <span class="number">222</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(id, stu_num, score) <span class="keyword">values</span> (<span class="number">3</span>, <span class="number">33</span>, <span class="number">333</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>Session1</th>
+<th>Session2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>begin;<br />select * from t2 where id = 1 for update;</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>begin;<br />select * from t2 where id = 2 for update;</td>
+</tr>
+<tr>
+<td>select * from t2 where id = 2 for update;</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>select * from t2 where id = 1 for update; – Deadlock</td>
+</tr>
+</tbody></table>
+<h4 id="死锁模拟-场景2"><a href="#死锁模拟-场景2" class="headerlink" title="死锁模拟-场景2"></a>死锁模拟-场景2</h4><p>S-lock 升级 X-lock</p>
+<p>数据准备：</p>
+<blockquote>
+<p>沿用简单场景1数据</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Session1</th>
+<th>Session2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>begin;<br />SELECT * FROM t2 WHERE id = 1 LOCK IN SHARE MODE;</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>begin;<br />DELETE FROM t2 WHERE id = 1;</td>
+</tr>
+<tr>
+<td>DELETE FROM t2 WHERE id = 1;</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>分析：</p>
+<ol>
+<li>Session1 获取到 S-Lock</li>
+<li>Session2 尝试获取到 X-Lock ，但是被 Session1 的S-Lock 阻塞</li>
+<li>Session1 想要获取到 X-Lock，本身拥有一个 S-Lock ，但是Session2 申请 X-Lock 在前，需要等待 Session2 释放之后才能提升到 X-Lock，两个事务造成资源争抢导致死锁</li>
+</ol>
+<h4 id="死锁模拟-场景3"><a href="#死锁模拟-场景3" class="headerlink" title="死锁模拟-场景3"></a>死锁模拟-场景3</h4><p>数据准备：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t3(</span><br><span class="line">  id <span class="type">int</span> <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">primary</span> key auto_increment,</span><br><span class="line">  a <span class="type">int</span> <span class="keyword">not</span> <span class="keyword">null</span> ,</span><br><span class="line">  <span class="keyword">unique</span> key ua(a)</span><br><span class="line">) engine<span class="operator">=</span>innodb;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t3(id,a) <span class="keyword">values</span>(<span class="number">1</span>,<span class="number">1</span>),(<span class="number">5</span>,<span class="number">4</span>),(<span class="number">20</span>,<span class="number">20</span>),(<span class="number">25</span>,<span class="number">12</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<table>
+<thead>
+<tr>
+<th>Session 1</th>
+<th>Session 2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>insert into t3(id,a) values(26,10);</td>
+</tr>
+<tr>
+<td>insert into t3(id,a) values(30,10);</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>insert into t3(id,a) values(40,9);</td>
+</tr>
+</tbody></table>
+<p>分析：</p>
+<p>事务一在插入时由于跟事务二插入的记录唯一键冲突，所以对 a=10 这个唯一索引加 S 锁（Next-key）并处于锁等待，事务二再插入 a=9 这条记录，需要获取插入意向锁（lock_mode X locks gap before rec insert intention）和事务一持有的 Next-key 锁冲突，从而导致死锁。</p>
+<h4 id="死锁模拟-场景4"><a href="#死锁模拟-场景4" class="headerlink" title="死锁模拟-场景4"></a>死锁模拟-场景4</h4><table>
+<thead>
+<tr>
+<th>事务1</th>
+<th>事务2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>begin;</td>
+<td>begin;</td>
+</tr>
+<tr>
+<td>UPDATE t SET d = d+1 WHERE id=7;</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>UPDATE t SET d = d+1 WHERE id=9;</td>
+</tr>
+<tr>
+<td>INSERT INTO t VALUES(8,8,8);</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>INSERT INTO t VALUES(8,8,8);</td>
+</tr>
+</tbody></table>
+<p>两条语句的执行计划：</p>
+<p><img src="https://img.jacian.com/note/img/20210531211847.png" alt="语句执行计划"></p>
+<p>事务1执行 INSERT 时的锁情况：</p>
+<p><img src="https://img.jacian.com/note/img/20210528003314.png" alt="锁情况"></p>
+<p>死锁日志：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">------------------------</span><br><span class="line">LATEST DETECTED DEADLOCK</span><br><span class="line">------------------------</span><br><span class="line">2021-05-28 00:07:00 0x70000a09a000</span><br><span class="line">*** (1) TRANSACTION:</span><br><span class="line">TRANSACTION 1518, ACTIVE 17 sec inserting</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">LOCK WAIT 3 lock struct(s), heap size 1136, 2 row lock(s)</span><br><span class="line">MySQL thread id 24, OS thread handle 123145470435328, query id 2673 localhost root update</span><br><span class="line">INSERT INTO t VALUES(8,8,8)</span><br><span class="line">*** (1) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 27 page no 3 n bits 80 index PRIMARY of table `lock_demo`.`t` trx id 1518 lock_mode X locks gap before rec insert intention waiting</span><br><span class="line">Record lock, heap no 4 PHYSICAL RECORD: n_fields 5; compact format; info bits 0</span><br><span class="line"> 0: len 4; hex 8000000a; asc     ;;</span><br><span class="line"> 1: len 6; hex 0000000005d0; asc       ;;</span><br><span class="line"> 2: len 7; hex 2c0000014a01ca; asc ,   J  ;;</span><br><span class="line"> 3: len 4; hex 8000000a; asc     ;;</span><br><span class="line"> 4: len 4; hex 8000000b; asc     ;;</span><br><span class="line"></span><br><span class="line">*** (2) TRANSACTION:</span><br><span class="line">TRANSACTION 1519, ACTIVE 12 sec inserting</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">3 lock struct(s), heap size 1136, 2 row lock(s)</span><br><span class="line">MySQL thread id 25, OS thread handle 123145470713856, query id 2674 localhost root update</span><br><span class="line">INSERT INTO t VALUES(8,8,8)</span><br><span class="line">*** (2) HOLDS THE LOCK(S):</span><br><span class="line">RECORD LOCKS space id 27 page no 3 n bits 80 index PRIMARY of table `lock_demo`.`t` trx id 1519 lock_mode X locks gap before rec</span><br><span class="line">Record lock, heap no 4 PHYSICAL RECORD: n_fields 5; compact format; info bits 0</span><br><span class="line"> 0: len 4; hex 8000000a; asc     ;;</span><br><span class="line"> 1: len 6; hex 0000000005d0; asc       ;;</span><br><span class="line"> 2: len 7; hex 2c0000014a01ca; asc ,   J  ;;</span><br><span class="line"> 3: len 4; hex 8000000a; asc     ;;</span><br><span class="line"> 4: len 4; hex 8000000b; asc     ;;</span><br><span class="line"></span><br><span class="line">*** (2) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 27 page no 3 n bits 80 index PRIMARY of table `lock_demo`.`t` trx id 1519 lock_mode X locks gap before rec insert intention waiting</span><br><span class="line">Record lock, heap no 4 PHYSICAL RECORD: n_fields 5; compact format; info bits 0</span><br><span class="line"> 0: len 4; hex 8000000a; asc     ;;</span><br><span class="line"> 1: len 6; hex 0000000005d0; asc       ;;</span><br><span class="line"> 2: len 7; hex 2c0000014a01ca; asc ,   J  ;;</span><br><span class="line"> 3: len 4; hex 8000000a; asc     ;;</span><br><span class="line"> 4: len 4; hex 8000000b; asc     ;;</span><br><span class="line"></span><br><span class="line">*** WE ROLL BACK TRANSACTION (2)</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>UPDATE 的 WHERE 子句没有满足条件的记录，而<strong>对于不存在的记录 并且在RR级别</strong>下，UPDATE 加锁类型为间隙锁（Gap Lock），间隙锁（Gap Lock）之间是兼容的，所以两个事务都能成功执行 UPDATE；这里的gap范围是索引id列 (5, 10) 的范围。</li>
+<li>INSERT 时，其加锁过程为先在插入间隙上获取插入意向锁，插入数据后再获取插入行上的排它锁。又插入意向锁与间隙锁（Gap Lock）和临键锁（Next-key Lock）冲突，即一个事务想要获取插入意向锁，如果有其他事务已经加了（Gap Lock）或临键锁（Next-key Lock），则会阻塞。</li>
+<li>场景中两个事务都持有间隙锁（Gap Lock），然后又申请插入意向锁，此时都被阻塞，循环等待造成死锁。</li>
+</ol>
+<blockquote>
+<ul>
+<li><p>记录锁（LOCK_REC_NOT_GAP）: lock_mode X locks rec but not gap</p>
+</li>
+<li><p>间隙锁（LOCK_GAP）: lock_mode X locks gap before rec</p>
+</li>
+<li><p>Next-key 锁（LOCK_ORNIDARY）: lock_mode X</p>
+</li>
+<li><p>插入意向锁（LOCK_INSERT_INTENTION）: lock_mode X locks gap before rec insert intention</p>
+</li>
+</ul>
+<p>并不是在日志里看到 lock_mode X 就认为这是 Next-key 锁，因为还有一个例外：如果在 supremum record 上加锁，<code>locks gap before rec</code> 会省略掉，间隙锁会显示成 <code>lock_mode X</code>，插入意向锁会显示成 <code>lock_mode X insert intention</code>。</p>
+</blockquote>
+<hr>
+<p>INSERT 语句，会尝试获取<code> lock mode S waiting</code> 锁，这是为了检测唯一键是否重复，必须进行一次当前读，要加 S 锁。</p>
+<p>INSERT 加锁分几个阶段：先检查唯一键约束，加 S 锁，再加插入意向锁，最后插入成功时升级为 X 锁。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查看当前事务信息：</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> INFORMATION_SCHEMA.INNODB_TRX;</span><br><span class="line"><span class="comment">-- 查看当前锁定的事务</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> INFORMATION_SCHEMA.INNODB_LOCKS;</span><br><span class="line"><span class="comment">-- 查看当前等待锁的事务</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> INFORMATION_SCHEMA.INNODB_LOCK_WAITS;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="站在巨人的肩膀上"><a href="#站在巨人的肩膀上" class="headerlink" title="站在巨人的肩膀上"></a>站在巨人的肩膀上</h2><p><img src="https://img.jacian.com/note/img/20210528012425.png" alt="向大佬低头"></p>
+<p><strong>参考链接：</strong></p>
+<p>MySQL官方团队：<a target="_blank" rel="noopener" href="https://mysqlserverteam.com/innodb-data-locking-part-3-deadlocks/">https://mysqlserverteam.com/innodb-data-locking-part-3-deadlocks/</a></p>
+<p>MySQL锁官方文档：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html">https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html</a></p>
+<p>死锁排查分析：<a target="_blank" rel="noopener" href="https://www.aneasystone.com/archives/2018/04/solving-dead-locks-four.html">https://www.aneasystone.com/archives/2018/04/solving-dead-locks-four.html</a></p>
+<p>死锁场景罗列：<a target="_blank" rel="noopener" href="https://github.com/aneasystone/mysql-deadlocks">https://github.com/aneasystone/mysql-deadlocks</a></p>
+<p>插入意向锁和Next-Key引起的死锁：<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000019745324">https://segmentfault.com/a/1190000019745324</a></p>
+<p>透过源码分析INSERT加锁流程：<a target="_blank" rel="noopener" href="https://www.aneasystone.com/archives/2018/06/insert-locks-via-mysql-source-code.html">https://www.aneasystone.com/archives/2018/06/insert-locks-via-mysql-source-code.html</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Jacian</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.jacian.com/2021/06/28/ef14e1b75d72/">https://blog.jacian.com/2021/06/28/ef14e1b75d72/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.jacian.com" target="_blank">Jacian's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/MySQL/">MySQL</a></div><div class="post_share"></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://img.jacian.com/wx_pay.png" target="_blank"><img class="post-qr-code-img" src="https://img.jacian.com/wx_pay.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://img.jacian.com/ali_pay.png" target="_blank"><img class="post-qr-code-img" src="https://img.jacian.com/ali_pay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/06/12/5bb8aee08c1b/"><img class="next-cover" src="https://img.jacian.com/note/img/20210612171726.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MySQL架构原理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2019/03/25/8c14db995ec4/" title="CentOS7安装MySQL"><img class="cover" src="https://img.jacian.com/FrXPCd0kCZ7Fui-atYsgp_-5EuuT" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-03-25</div><div class="title">CentOS7安装MySQL</div></div></a></div><div><a href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理"><img class="cover" src="https://img.jacian.com/note/img/20210612171726.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-12</div><div class="title">MySQL架构原理</div></div></a></div><div><a href="/2019/09/05/ec6e62d7dc9c/" title="浅谈关于SQL优化的思路"><img class="cover" src="https://img.jacian.com/FnUD1D1JYd4duuXktGBrOhkeLbMW" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-09-05</div><div class="title">浅谈关于SQL优化的思路</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://img.jacian.com/boyfavicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Jacian</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/JacianLiu"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:JacianLiu@gmail.com" target="_blank" title="Email"><i class="iconfont icon-youxiang1"></i></a><a class="social-icon" href="https://www.cnblogs.com/jacian" target="_blank" title="博客园"><i class="iconfont icon-cnblogs"></i></a><a class="social-icon" href="https://blog.csdn.net/JacianLiu" target="_blank" title="CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://t.me/jacian_6" target="_blank" title="Telegram"><i class="iconfont icon-telegram"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%81%E5%88%86%E7%B1%BB"><span class="toc-number">1.</span> <span class="toc-text">锁分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A5%E6%93%8D%E4%BD%9C%E7%B2%92%E5%BA%A6%E5%8C%BA%E5%88%86"><span class="toc-number">1.1.</span> <span class="toc-text">以操作粒度区分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A5%E6%93%8D%E4%BD%9C%E7%B1%BB%E5%9E%8B%E5%8C%BA%E5%88%86"><span class="toc-number">1.2.</span> <span class="toc-text">以操作类型区分</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">举例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%84%8F%E5%90%91%E9%94%81%E3%80%81%E5%85%B1%E4%BA%AB%E9%94%81%E5%92%8C%E6%8E%92%E5%AE%83%E9%94%81%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%BC%E5%AE%B9%E5%85%B3%E7%B3%BB"><span class="toc-number">1.2.2.</span> <span class="toc-text">意向锁、共享锁和排它锁之间的兼容关系</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A5%E6%93%8D%E4%BD%9C%E6%80%A7%E8%83%BD%E5%8C%BA%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">以操作性能区分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB%E7%9A%84%E8%A1%8C%E9%94%81"><span class="toc-number">2.</span> <span class="toc-text">InnoDB的行锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%8C%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">2.1.</span> <span class="toc-text">行锁的实现原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%8C%E9%94%81%E7%9A%84%E4%B8%8D%E5%90%8C%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.</span> <span class="toc-text">行锁的不同实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL%E4%BD%BF%E7%94%A8%E9%97%B4%E9%9A%99%E9%94%81%E7%9A%84%E7%9B%AE%E7%9A%84"><span class="toc-number">2.3.</span> <span class="toc-text">MySQL使用间隙锁的目的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%81%E8%A7%84%E5%88%99"><span class="toc-number">2.4.</span> <span class="toc-text">锁规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%81%E7%BB%93%E6%9E%84"><span class="toc-number">2.5.</span> <span class="toc-text">锁结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%81%E7%9A%84%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="toc-number">2.6.</span> <span class="toc-text">锁的兼容性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E9%94%81"><span class="toc-number">2.7.</span> <span class="toc-text">加锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E9%94%AE%E5%8A%A0%E9%94%81"><span class="toc-number">2.7.1.</span> <span class="toc-text">主键加锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%94%AF%E4%B8%80%E9%94%AE%E5%8A%A0%E9%94%81"><span class="toc-number">2.7.2.</span> <span class="toc-text">唯一键加锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E5%94%AF%E4%B8%80%E9%94%AE%E5%8A%A0%E9%94%81"><span class="toc-number">2.7.3.</span> <span class="toc-text">非唯一键加锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%B4%A2%E5%BC%95%E5%8A%A0%E9%94%81"><span class="toc-number">2.7.4.</span> <span class="toc-text">无索引加锁</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%81%E6%A8%A1%E6%8B%9F"><span class="toc-number">3.</span> <span class="toc-text">锁模拟</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%81%E4%B8%BE%E4%BE%8B"><span class="toc-number">3.1.</span> <span class="toc-text">锁举例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AD%89%E5%80%BC%E6%9F%A5%E8%AF%A2%E9%97%B4%E9%9A%99%E9%94%81"><span class="toc-number">3.1.1.</span> <span class="toc-text">等值查询间隙锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E5%94%AF%E4%B8%80%E9%94%AE%E7%AD%89%E5%80%BC%E9%94%81"><span class="toc-number">3.1.2.</span> <span class="toc-text">非唯一键等值锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%E8%8C%83%E5%9B%B4%E9%94%81"><span class="toc-number">3.1.3.</span> <span class="toc-text">主键索引范围锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E8%8C%83%E5%9B%B4%E9%94%81"><span class="toc-number">3.1.4.</span> <span class="toc-text">非唯一索引范围锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%AD%89%E5%80%BC%E9%94%81for-Update"><span class="toc-number">3.1.5.</span> <span class="toc-text">非唯一索引等值锁for Update</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%BB%E9%94%81%E6%A8%A1%E6%8B%9F"><span class="toc-number">3.2.</span> <span class="toc-text">死锁模拟</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%BB%E9%94%81%E6%A8%A1%E6%8B%9F-%E5%9C%BA%E6%99%AF1"><span class="toc-number">3.2.1.</span> <span class="toc-text">死锁模拟-场景1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%BB%E9%94%81%E6%A8%A1%E6%8B%9F-%E5%9C%BA%E6%99%AF2"><span class="toc-number">3.2.2.</span> <span class="toc-text">死锁模拟-场景2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%BB%E9%94%81%E6%A8%A1%E6%8B%9F-%E5%9C%BA%E6%99%AF3"><span class="toc-number">3.2.3.</span> <span class="toc-text">死锁模拟-场景3</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%BB%E9%94%81%E6%A8%A1%E6%8B%9F-%E5%9C%BA%E6%99%AF4"><span class="toc-number">3.2.4.</span> <span class="toc-text">死锁模拟-场景4</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%99%E5%9C%A8%E5%B7%A8%E4%BA%BA%E7%9A%84%E8%82%A9%E8%86%80%E4%B8%8A"><span class="toc-number">4.</span> <span class="toc-text">站在巨人的肩膀上</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁"><img src="https://img.jacian.com/note/img/20210528011819.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL的锁"/></a><div class="content"><a class="title" href="/2021/06/28/ef14e1b75d72/" title="MySQL的锁">MySQL的锁</a><time datetime="2021-06-28T12:28:19.000Z" title="发表于 2021-06-28 20:28:19">2021-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理"><img src="https://img.jacian.com/note/img/20210612171726.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL架构原理"/></a><div class="content"><a class="title" href="/2021/06/12/5bb8aee08c1b/" title="MySQL架构原理">MySQL架构原理</a><time datetime="2021-06-12T09:17:00.000Z" title="发表于 2021-06-12 17:17:00">2021-06-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建"><img src="https://img.jacian.com/note/img/20210524220542.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper源码环境搭建"/></a><div class="content"><a class="title" href="/2020/12/31/402df3477423/" title="Zookeeper源码环境搭建">Zookeeper源码环境搭建</a><time datetime="2020-12-31T07:07:00.000Z" title="发表于 2020-12-31 15:07:00">2020-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB"><img src="https://img.jacian.com/note/img/20210524201258.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper一致性协议——ZAB"/></a><div class="content"><a class="title" href="/2020/12/30/b40d5e3edd17/" title="Zookeeper一致性协议——ZAB">Zookeeper一致性协议——ZAB</a><time datetime="2020-12-30T09:07:00.000Z" title="发表于 2020-12-30 17:07:00">2020-12-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介"><img src="https://img.jacian.com/note/img/20210524200352.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Zookeeper简介"/></a><div class="content"><a class="title" href="/2020/12/29/7136470f45ff/" title="Zookeeper简介">Zookeeper简介</a><time datetime="2020-12-29T15:59:00.000Z" title="发表于 2020-12-29 23:59:00">2020-12-29</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2021 By Jacian</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p><p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://beian.miit.gov.cn/"><img class="icp-icon entered loading" alt="ICP" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/npm/kang-static/Hexo/img/icp.png" data-ll-status="loading"><span>京ICP备19039488号</span></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'blog-0gjteqdgda3097c6',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'blog-0gjteqdgda3097c6',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div></div></body></html>
