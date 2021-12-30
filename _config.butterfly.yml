@@ -364,7 +364,7 @@ facebook_comments:
 # Twikoo
 # https://github.com/imaegoo/twikoo
 twikoo:
-  envId: blog-0gjteqdgda3097c6
+  envId: hexo-blog-6gp2f1585622e29d
   region:
   visitor: false
   option:
