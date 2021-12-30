@@ -365,7 +365,7 @@ facebook_comments:
 # https://github.com/imaegoo/twikoo
 twikoo:
   envId: hexo-blog-6gp2f1585622e29d
-  region:
+  region: ap-guangzhou
   visitor: false
   option:
 
