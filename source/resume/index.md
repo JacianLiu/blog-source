@@ -5,6 +5,8 @@ type: "resume"
 comments: false
 ---
 
+> 简历更新时间： 2024-01-29 21:29:12
+
 <i class="fa-solid fa-phone"></i> 电话：15300099971 ｜ <i class="fa-solid fa-envelope"></i> 邮箱：[jacianliu@gmail.com](mailto:jacianliu@gmail.com) ｜ <i class="fa-solid fa-house"></i> blog：[https://blog.jacian.com](https://blog.jacian.com)｜ <i class="fa-solid fa-graduation-cap"></i> 学历：本科
 
 ## 个人简述
