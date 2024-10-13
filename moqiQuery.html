@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨奇辅助码查询</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #search {
+            width: 100%;
+            padding: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h1>墨奇辅助码查询</h1>
+
+<!-- Search input for users to type and query Chinese characters -->
+<input type="text" id="search" placeholder="输入汉字进行查询...">
+
+<!-- Results table -->
+<table>
+    <thead>
+        <tr>
+            <th>汉字</th>
+            <th>拼音</th>
+            <th>辅助码</th>
+            <th>首形</th>
+            <th>末形</th>
+            <th>拆分笔画</th>
+        </tr>
+    </thead>
+    <tbody id="result">
+    </tbody>
+</table>
+
+<script>
+// Global variable to hold the loaded word data, stroke data, and pinyin data
+let wordData = [];
+let strokeData = {};
+let pinyinData = {};
+
+// Function to fetch data from a given URL and return the text content
+async function fetchFile(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch file from ${url}`);
+    }
+    return await response.text();
+}
+
+// Fetch and process the assistive code, stroke decomposition, and pinyin files
+async function fetchData() {
+    const assistiveCodeUrl = 'https://raw.githubusercontent.com/gaboolic/moqima-tables/refs/heads/main/首尾码8105.txt';
+    const strokeUrl = 'https://raw.githubusercontent.com/gaboolic/moqima-tables/refs/heads/main/chaifen8105.txt';
+    const pinyinUrl = 'https://raw.githubusercontent.com/amzxyz/rime_wanxiang_pinyin/refs/heads/main/cn_dicts/8105.dict.yaml';
+
+    try {
+        // Fetch all files in parallel
+        const [assistiveCodeData, strokeDataText, pinyinDataText] = await Promise.all([
+            fetchFile(assistiveCodeUrl),
+            fetchFile(strokeUrl),
+            fetchFile(pinyinUrl)
+        ]);
+
+        processAssistiveCodeData(assistiveCodeData);
+        processStrokeData(strokeDataText);
+        processPinyinData(pinyinDataText);
+        
+        // Enable the search input after data is loaded
+        document.getElementById('search').style.display = 'block'; 
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+// Process the content of the assistive code file and store the word data
+function processAssistiveCodeData(data) {
+    wordData = data.split('\n').map(line => {
+        const parts = line.split('\t');
+        if (parts.length >= 3) {
+            const [character, code, shape] = parts;
+            const initialShape = shape.slice(0, 1);  // First character as initial shape
+            const finalShape = shape.slice(-1);     // Last character as final shape
+            return { character, code, initialShape, finalShape };
+        }
+        return null;
+    }).filter(item => item !== null);  // Filter out any invalid rows
+}
+
+// Process the content of the stroke decomposition file and store it in an object
+function processStrokeData(data) {
+    strokeData = data.split('\n').reduce((acc, line) => {
+        const parts = line.split(':');
+        if (parts.length >= 2) {
+            const character = parts[0].trim();
+            const strokes = parts[1].trim();
+            acc[character] = strokes;
+        }
+        return acc;
+    }, {});
+}
+
+// Process the pinyin file and store it in an object
+function processPinyinData(data) {
+    pinyinData = data.split('\n').reduce((acc, line) => {
+        // Filter out comment lines and split by tab
+        if (!line.startsWith('#') && line.includes('\t')) {
+            const parts = line.split('\t');
+            const character = parts[0].trim();
+            const pinyin = parts[1].split(';')[0].trim();  // Extract the first pinyin before ;
+            acc[character] = pinyin;
+        }
+        return acc;
+    }, {});
+}
+
+// Search function to find and display assistive codes, pinyin, strokes for each character in the input
+function searchCharacter(query) {
+    const resultElement = document.getElementById("result");
+    resultElement.innerHTML = ''; // Clear previous results
+
+    if (!query) return; // No query, don't do anything
+
+    // Iterate through each character in the query and display valid results
+    query.split('').forEach(character => {
+        const result = wordData.find(item => item.character === character);
+        if (result) {
+            const pinyin = pinyinData[character] || '无拼音';  // Display '无拼音' if no pinyin found
+            const strokes = strokeData[character] || '无拆分数据';  // Display '无拆分数据' if no strokes found
+            const row = `
+                <tr>
+                    <td>${result.character}</td>
+                    <td>${pinyin}</td>
+                    <td>${result.code}</td>
+                    <td>${result.initialShape}</td>
+                    <td>${result.finalShape}</td>
+                    <td>${strokes}</td>
+                </tr>`;
+            resultElement.insertAdjacentHTML('beforeend', row);
+        }
+    });
+}
+
+// Automatically fetch data when the page loads
+window.addEventListener('DOMContentLoaded', fetchData);
+
+// Event listener for the search input
+document.getElementById("search").addEventListener("input", function (e) {
+    searchCharacter(e.target.value);
+});
+</script>
+
+</body>
+</html>
